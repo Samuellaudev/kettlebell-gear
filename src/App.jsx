@@ -1,13 +1,21 @@
-import './App.css'
+import Navbar from './components/Navbar';
+import Footer from './components/Footer';
 
-function App() {
+const App = () => {
   return (
     <>
-      <div>
-        Test
-      </div>
+      <Navbar />
+      <main
+        className='flex min-h-screen flex-col 
+        bg-white text-black'
+      >
+        <div className="mt-5 md:mt-0 container mx-auto">
+          Kettlebell
+        </div>
+      </main>
+      <Footer />
     </>
-  )
-}
+  );
+};
 
-export default App
+export default App;
