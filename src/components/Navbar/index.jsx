@@ -1,4 +1,5 @@
-import React, { useState } from "react";
+import { useState } from "react";
+import { NavLink } from "react-router-dom";
 
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -11,13 +12,13 @@ const Navbar = () => {
     <nav className="relative bg-white shadow ">
       <div className="container px-6 py-4 mx-auto md:flex md:justify-between md:items-center">
         <div className="flex items-center justify-between">
-          <a href="/">
+          <NavLink to="/">
             <img
               className="w-auto h-14"
               src="/src/assets/Logo.png"
               alt="Logo"
             />
-          </a>
+          </NavLink>
 
           {/* Mobile menu button */}
           <div className="flex lg:hidden">
@@ -51,36 +52,42 @@ const Navbar = () => {
           } absolute inset-x-0 z-20 w-full px-6 py-4 transition-all duration-300 ease-in-out bg-white  md:mt-0 md:p-0 md:top-0 md:relative md:bg-transparent md:w-auto md:opacity-100 md:translate-x-0 md:flex md:items-center`}
         >
           <div className="flex flex-col md:flex-row md:mx-6">
-            <a
+            <NavLink
               className="my-2 text-gray-700 transition-colors duration-300 transform  hover:text-blue-500 md:mx-4 md:my-0"
-              href="#"
+              to="/"
             >
               Home
-            </a>
-            <a
+            </NavLink>
+            <NavLink
               className="my-2 text-gray-700 transition-colors duration-300 transform  hover:text-blue-500 md:mx-4 md:my-0"
-              href="#"
+              to="/shop"
             >
               Shop
-            </a>
-            <a
+            </NavLink>
+            <NavLink
               className="my-2 text-gray-700 transition-colors duration-300 transform  hover:text-blue-500 md:mx-4 md:my-0"
-              href="#"
+              to="/contact"
             >
               Contact
-            </a>
-            <a
+            </NavLink>
+            <NavLink
               className="my-2 text-gray-700 transition-colors duration-300 transform  hover:text-blue-500 md:mx-4 md:my-0"
-              href="#"
+              to="/about"
             >
               About
-            </a>
+            </NavLink>
+            <NavLink
+              className="my-2 text-gray-700 transition-colors duration-300 transform  hover:text-blue-500 md:mx-4 md:my-0"
+              to="/login"
+            >
+              Login
+            </NavLink>
           </div>
 
           <div className="flex justify-center md:block">
-            <a
+            <NavLink
               className="relative text-gray-700 transition-colors duration-300 transform  hover:text-gray-600"
-              href="#"
+              to="/cart"
             >
               <img
                 className="w-auto h-6"
@@ -89,7 +96,7 @@ const Navbar = () => {
                 />
 
               <span className="absolute top-0 left-0 p-1 text-xs text-white bg-blue-500 rounded-full"></span>
-            </a>
+            </NavLink>
           </div>
         </div>
       </div>

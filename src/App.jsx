@@ -1,3 +1,4 @@
+import { Outlet } from 'react-router-dom'
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
 
@@ -10,7 +11,7 @@ const App = () => {
         bg-white text-black'
       >
         <div className="mt-5 md:mt-0 container mx-auto">
-          Kettlebell
+          <Outlet />
         </div>
       </main>
       <Footer />
