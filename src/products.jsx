@@ -4,7 +4,7 @@ const products = [
     name: 'Kettlebell - Tiger (Blue)',
     image: '/images/kettlebell_animals/1.jpg',
     description:
-      'Kettlebell - Tiger (Blue)',
+      'The "Kettlebell - Tiger (Blue)" combines a striking blue color with a captivating tiger design, offering both aesthetic appeal and functionality for strength and conditioning workouts with its durable construction and ergonomic design.',
     brand: 'Kettlebell Gear',
     category: 'Animals',
     price: 89.99,
