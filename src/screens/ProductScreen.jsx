@@ -1,5 +1,8 @@
+import { useState } from 'react';
+import { useNavigate, useParams, Link } from 'react-router-dom';
+import { useDispatch } from 'react-redux';
+import { addToCart } from '../slices/cartSlice';
 import { useGetProductDetailsQuery } from '../slices/productsApiSlice';
-import { useParams, Link } from 'react-router-dom';
 import Rating from '../components/Rating';
 import Loader from '../components/Loader';
 import Message from '../components/Message';
@@ -7,6 +10,16 @@ import Message from '../components/Message';
 const ProductScreen = () => {
   const { id: productId } = useParams();
   const { data: product, isLoading, error } = useGetProductDetailsQuery(productId);
+
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+
+  const [qty, setQty] = useState(1);
+
+  const addToCartHandler = () => {
+    dispatch(addToCart({ ...product, qty }));
+    navigate('/cart');
+  }
 
   return (
     <>
@@ -40,9 +53,32 @@ const ProductScreen = () => {
                   <p className="mb-2">
                     Status: { product.countInStock > 0 ? 'In Stock' : 'Out Of Stock' }
                   </p>
+                  {
+                    product.countInStock > 0 && (
+                      <div className="border-t border-gray-200 py-3">
+                        <div className="flex items-center justify-space">
+                          <div className="text-base">Qty</div>
+                          <div className="ml-3">
+                            <select
+                              className="appearance-none border border-gray-300 rounded-md py-1 px-2 bg-white focus:outline-none focus:border-blue-500"
+                              value={qty}
+                              onChange={(e) => setQty(Number(e.target.value))}
+                            >
+                              {[...Array(product.countInStock).keys()].map((x) => (
+                                <option key={x + 1} value={x + 1}>
+                                  {x + 1}
+                                </option>
+                              ))}
+                            </select>
+                          </div>
+                        </div>
+                      </div>
+                    )
+                  }
                   <button
                     className={ `w-full py-2 px-4 rounded-md ${ product.countInStock === 0 ? 'bg-gray-400 cursor-not-allowed' : 'bg-blue-500 hover:bg-blue-600 text-white' }` }
-                    disabled={ product.countInStock === 0 }
+                      disabled={ product.countInStock === 0 }
+                      onClick={addToCartHandler}
                   >
                     Add To Cart
                   </button>

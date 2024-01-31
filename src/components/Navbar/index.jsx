@@ -1,7 +1,10 @@
 import { useState } from "react";
+import { useSelector } from 'react-redux';
 import { NavLink } from "react-router-dom";
 
 const Navbar = () => {
+  const { cartItems } = useSelector((state) => state.cart);
+  
   const [isOpen, setIsOpen] = useState(false);
 
   const toggleMenu = () => {
@@ -84,7 +87,7 @@ const Navbar = () => {
             </NavLink>
           </div>
 
-          <div className="flex justify-center md:block">
+          <div className="flex flex-row justify-center">
             <NavLink
               className="relative text-gray-700 transition-colors duration-300 transform  hover:text-gray-600"
               to="/cart"
@@ -97,6 +100,15 @@ const Navbar = () => {
 
               <span className="absolute top-0 left-0 p-1 text-xs text-white bg-blue-500 rounded-full"></span>
             </NavLink>
+            <div>
+              {
+                cartItems.length > 0 && (
+                  <span className="inline-block py-1 px-2 bg-green-600 text-white text-xs font-semibold rounded-full">
+                    { cartItems.reduce((a, c) => a + c.qty, 0) }
+                  </span>
+                )
+              }
+            </div>
           </div>
         </div>
       </div>
