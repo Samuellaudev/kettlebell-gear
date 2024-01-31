@@ -4,6 +4,7 @@ import { logout } from '../../slices/authSlice';
 import { useNavigate } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
 import { NavLink } from "react-router-dom";
+import { resetCart } from '../../slices/cartSlice';
 
 const Navbar = () => {
   const { cartItems } = useSelector((state) => state.cart);
@@ -41,6 +42,7 @@ const Navbar = () => {
     try {
       await logoutApiCall().unwrap();
       dispatch(logout());
+      dispatch(resetCart());
       navigate('/');
     } catch (err) {
       console.error(err);
