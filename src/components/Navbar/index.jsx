@@ -1,14 +1,50 @@
-import { useState } from "react";
-import { useSelector } from 'react-redux';
+import { useState, useEffect, useRef } from 'react';
+import { useLogoutMutation } from '../../slices/usersApiSlice';
+import { logout } from '../../slices/authSlice';
+import { useNavigate } from 'react-router-dom';
+import { useSelector, useDispatch } from 'react-redux';
 import { NavLink } from "react-router-dom";
 
 const Navbar = () => {
   const { cartItems } = useSelector((state) => state.cart);
-  
-  const [isOpen, setIsOpen] = useState(false);
+  const { userInfo } = useSelector((state) => state.auth);
 
-  const toggleMenu = () => {
-    setIsOpen(!isOpen);
+  const [isOpen, setIsOpen] = useState(false);
+  const toggleMenu = () => setIsOpen(!isOpen);
+
+  const [isDropdownOpen, setIsDropdownOpen] = useState(true);
+  const dropdownRef = useRef(null);
+
+  useEffect(() => {
+    const handleOutsideClick = (e) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(e.target)) {
+        setIsDropdownOpen(false);
+      }
+    };
+
+    document.addEventListener('mousedown', handleOutsideClick);
+
+    return () => {
+      document.removeEventListener('mousedown', handleOutsideClick);
+    };
+  }, []);
+
+  const toggleDropdown = () => setIsDropdownOpen(!isDropdownOpen);
+  const closeDropdown = () => setIsDropdownOpen(false);
+
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+
+  const [logoutApiCall] = useLogoutMutation();
+
+  const logoutHandler = async () => {
+    try {
+      await logoutApiCall().unwrap();
+      dispatch(logout());
+      navigate('/');
+    } catch (err) {
+      console.error(err);
+    }
   };
 
   return (
@@ -54,7 +90,7 @@ const Navbar = () => {
             isOpen ? "block" : "hidden"
           } absolute inset-x-0 z-20 w-full px-6 py-4 transition-all duration-300 ease-in-out bg-white  md:mt-0 md:p-0 md:top-0 md:relative md:bg-transparent md:w-auto md:opacity-100 md:translate-x-0 md:flex md:items-center`}
         >
-          <div className="flex flex-col md:flex-row md:mx-6">
+          <div className="flex flex-col md:flex-row md:mx-6 items-center">
             <NavLink
               className="my-2 text-gray-700 transition-colors duration-300 transform  hover:text-blue-500 md:mx-4 md:my-0"
               to="/"
@@ -79,12 +115,41 @@ const Navbar = () => {
             >
               About
             </NavLink>
-            <NavLink
-              className="my-2 text-gray-700 transition-colors duration-300 transform  hover:text-blue-500 md:mx-4 md:my-0"
-              to="/login"
-            >
-              Login
-            </NavLink>
+
+            { userInfo ? (
+              <div className="relative inline-block" ref={ dropdownRef }>
+                {/* Dropdown toggle button */}
+                <button
+                  onClick={ toggleDropdown }
+                  className="flex items-center py-1 px-2 text-gray-700 bg-white border-2 rounded-md focus:border-blue-500 focus:ring-opacity-40 focus:ring-blue-300 focus:ring focus:outline-none"
+                >
+                  { userInfo.name }
+                  <img 
+                    src='/svg/menu/dropdown-menu_down-arrow.svg'
+                    className="w-auto h-4 ml-1"
+                    alt="dropdown menu"
+                  />
+                </button>
+                {/* Dropdown menu */}
+                {isDropdownOpen && (
+                  <div onClick={ closeDropdown } className="absolute left-0 w-24 py-2 mt-2 origin-top-right bg-white rounded-md shadow-xl">
+                    <NavLink to="/profile" className="block px-4 py-2 text-gray-800 hover:bg-blue-500 hover:text-white">
+                      Profile
+                    </NavLink>
+                    <button onClick={logoutHandler} className="block w-full px-4 py-2 text-left text-gray-800 hover:bg-blue-500 hover:text-white">
+                      Logout
+                    </button>
+                  </div>
+                )}
+              </div>
+            ) : (
+              <NavLink
+                to="/login"
+                className="text-gray-700 flex items-center transition-colors duration-300 transform  hover:text-blue-500 md:mx-4 md:my-0"
+              >
+                Login
+              </NavLink>
+            )}
           </div>
 
           <div className="flex flex-row justify-center">
@@ -101,12 +166,10 @@ const Navbar = () => {
               <span className="absolute top-0 left-0 p-1 text-xs text-white bg-blue-500 rounded-full"></span>
             </NavLink>
             <div>
-              {
-                cartItems.length > 0 && (
-                  <span className="inline-block py-1 px-2 bg-green-600 text-white text-xs font-semibold rounded-full">
-                    { cartItems.reduce((a, c) => a + c.qty, 0) }
-                  </span>
-                )
+              { cartItems.length > 0 && (
+                <span className="inline-block py-1 px-2 bg-green-600 text-white text-xs font-semibold rounded-full">
+                  { cartItems.reduce((a, c) => a + c.qty, 0) }
+                </span>)
               }
             </div>
           </div>

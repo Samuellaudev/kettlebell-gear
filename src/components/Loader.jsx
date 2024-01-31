@@ -10,7 +10,7 @@ const Loader = ({customClass}) => {
 
   return (
     <IconContext.Provider value={ options }>
-      <div className="flex justify-center items-center h-full">
+      <div className="flex justify-center items-center absolute opacity-50 w-1/2 h-full bg-gray-300">
         <ImSpinner11 className="animate-spin"/>
       </div>
     </IconContext.Provider>
