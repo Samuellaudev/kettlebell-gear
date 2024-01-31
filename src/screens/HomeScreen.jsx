@@ -1,6 +1,7 @@
 import { useGetProductsQuery } from '../slices/productsApiSlice';
 import Product from '../components/Product';
 import Loader from '../components/Loader';
+import Message from '../components/Message';
 
 const HomeScreen = () => {
   const { data: products, isLoading, error } = useGetProductsQuery();
@@ -10,7 +11,7 @@ const HomeScreen = () => {
       { isLoading ? (
         <Loader customClass='mt-20'/>
       ) : error ? (
-        <div>{ error?.data.message || error.error }</div>
+        <Message variant='error'>{ error?.data.message || error?.error }</Message>
       ) : (
         <>
           <h1 className="text-3xl font-bold my-4 mt-6">Latest Products</h1>
