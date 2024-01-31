@@ -1,6 +1,7 @@
 import { useGetProductDetailsQuery } from '../slices/productsApiSlice';
 import { useParams, Link } from 'react-router-dom';
 import Rating from '../components/Rating';
+import Loader from '../components/Loader';
 
 const ProductScreen = () => {
   const { id: productId } = useParams();
@@ -15,7 +16,7 @@ const ProductScreen = () => {
         Go Back
       </Link>
       { isLoading ? (
-        <div>Loading...</div>
+        <Loader customClass='mt-20'/>
       ) : error ? (
         <div>{ error?.data.message || error.error }</div>
         ) : (
