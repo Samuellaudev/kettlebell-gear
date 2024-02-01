@@ -8,6 +8,7 @@ import {
   usePayOrderMutation,
   useGetOrderDetailsQuery,
   useGetPaypalClientIdQuery,
+  useDeliverOrderMutation
 } from '../slices/ordersApiSlice';
 import { toast } from 'react-toastify';
 
@@ -20,8 +21,6 @@ const OrderScreen = () => {
     isLoading,
     error,
   } = useGetOrderDetailsQuery(orderId);
-
-  const { userInfo } = useSelector((state) => state.auth);
 
   const [{ isPending }, paypalDispatch] = usePayPalScriptReducer();
   
@@ -91,7 +90,20 @@ const OrderScreen = () => {
       .then((orderID) => {
         return orderID;
       });
-  };  
+  };
+
+  const { userInfo } = useSelector((state) => state.auth);
+
+  const [deliverOrder, { isLoading: loadingDeliver }] = useDeliverOrderMutation();
+  const deliverOrderHandler = async () => {
+    try {
+      await deliverOrder(orderId);
+      refetch();
+      toast.success('Order delivered')
+    } catch (err) {
+      toast.error(err?.data?.message || err.message)
+    }
+  };
 
   return isLoading ? (
     <Loader />
@@ -189,6 +201,23 @@ const OrderScreen = () => {
                 )}
               </>
             )}
+
+            {loadingDeliver && <Loader />}
+
+            {userInfo &&
+              userInfo.isAdmin &&
+              order.isPaid &&
+              !order.isDelivered && (
+                <div>
+                  <button
+                    type='button'
+                    className='bg-blue-500 text-white py-2 px-4 w-full rounded-md cursor-pointer'
+                    onClick={deliverOrderHandler}
+                  >
+                    Mark As Delivered
+                  </button>
+                </div>
+              )}
           </div>
         </div>
       </div>

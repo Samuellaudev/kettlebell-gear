@@ -13,13 +13,28 @@ const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
   const toggleMenu = () => setIsOpen(!isOpen);
 
+  // Menu
   const [isDropdownOpen, setIsDropdownOpen] = useState(true);
   const dropdownRef = useRef(null);
+
+  const toggleDropdown = () => setIsDropdownOpen(!isDropdownOpen);
+  const closeDropdown = () => setIsDropdownOpen(false);
+
+  // Admin menu
+  const [isAdminDropdownOpen, setIsAdminDropdownOpen] = useState(true);
+  const adminDropdownRef = useRef(null);
+
+  const toggleAdminDropdown = () => setIsAdminDropdownOpen(!isAdminDropdownOpen);
+  const closeAdminDropdown = () => setIsAdminDropdownOpen(false);
 
   useEffect(() => {
     const handleOutsideClick = (e) => {
       if (dropdownRef.current && !dropdownRef.current.contains(e.target)) {
         setIsDropdownOpen(false);
+      }
+
+      if (adminDropdownRef.current && !adminDropdownRef.current.contains(e.target)) {
+        setIsAdminDropdownOpen(false);
       }
     };
 
@@ -28,10 +43,7 @@ const Navbar = () => {
     return () => {
       document.removeEventListener('mousedown', handleOutsideClick);
     };
-  }, []);
-
-  const toggleDropdown = () => setIsDropdownOpen(!isDropdownOpen);
-  const closeDropdown = () => setIsDropdownOpen(false);
+  }, []);  
 
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -118,12 +130,13 @@ const Navbar = () => {
               About
             </NavLink>
 
+            {/* Logged-in User Links */}
             { userInfo ? (
-              <div className="relative inline-block" ref={ dropdownRef }>
+              <div className="relative inline-block ml-1" ref={ dropdownRef }>
                 {/* Dropdown toggle button */}
                 <button
                   onClick={ toggleDropdown }
-                  className="flex items-center py-1 px-2 text-gray-700 bg-white border-2 rounded-md focus:border-blue-500 focus:ring-opacity-40 focus:ring-blue-300 focus:ring focus:outline-none"
+                  className="flex items-center py-1 px-2 text-gray-700 bg-white rounded-md focus:border-blue-500 focus:ring-opacity-40 focus:ring-blue-300 focus:ring focus:outline-none"
                 >
                   { userInfo.name }
                   <img 
@@ -151,6 +164,38 @@ const Navbar = () => {
               >
                 Login
               </NavLink>
+            )}
+
+            {/* Admin Links */ }
+            { userInfo && userInfo.isAdmin && (
+              <div className="relative inline-block" ref={ adminDropdownRef }>
+                {/* Admin Dropdown toggle button */}
+                <button
+                    onClick={ toggleAdminDropdown }
+                    className="flex items-center py-1 px-2 text-gray-700 bg-white rounded-md focus:border-blue-500 focus:ring-opacity-40 focus:ring-blue-300 focus:ring focus:outline-none"
+                  >
+                    Admin
+                    <img 
+                      src='/svg/menu/dropdown-menu_down-arrow.svg'
+                      className="w-auto h-4 ml-1"
+                      alt="admin dropdown menu"
+                    />
+                </button>
+                {/* Admin Dropdown menu */}
+                {isAdminDropdownOpen && (
+                  <div onClick={ closeAdminDropdown } className="absolute left-0 w-24 py-2 mt-2 origin-top-right bg-white rounded-md shadow-xl">
+                    <NavLink to="/admin/productlist" className="block px-4 py-2 text-gray-800 hover:bg-blue-500 hover:text-white">
+                      Products
+                    </NavLink>
+                    <NavLink to="/admin/orderlist" className="block px-4 py-2 text-gray-800 hover:bg-blue-500 hover:text-white">
+                      Orders
+                    </NavLink>
+                    <NavLink to="/admin/userlist" className="block px-4 py-2 text-gray-800 hover:bg-blue-500 hover:text-white">
+                      Users
+                    </NavLink>
+                  </div>
+                )}
+              </div>
             )}
           </div>
 
