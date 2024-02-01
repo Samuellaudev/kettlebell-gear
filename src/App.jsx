@@ -9,10 +9,7 @@ const App = () => {
     <>
       <ToastContainer />
       <Navbar />
-      <main
-        className='flex min-h-screen flex-col 
-        bg-white text-black'
-      >
+      <main className='flex flex-col bg-white text-black'>
         <div className="mt-5 md:mt-0 container mx-auto">
           <Outlet />
         </div>
