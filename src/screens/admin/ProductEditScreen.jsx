@@ -7,14 +7,16 @@ import { toast } from 'react-toastify';
 import {
   useGetProductDetailsQuery,
   useUpdateProductMutation,
+  useUploadProductImageMutation
 } from '../../slices/productsApiSlice';
+import { modifiedImageName, originalImageName } from '../../utils/helpers';
 
 const ProductEditScreen = () => {
   const { id: productId } = useParams();
 
   const [name, setName] = useState('');
   const [price, setPrice] = useState(0);
-  const [image, setImage] = useState('');
+  const [image, setImage] = useState({});
   const [brand, setBrand] = useState('');
   const [category, setCategory] = useState('');
   const [countInStock, setCountInStock] = useState(0);
@@ -26,6 +28,48 @@ const ProductEditScreen = () => {
     refetch,
     error,
   } = useGetProductDetailsQuery(productId);
+
+  useEffect(() => {
+    if (product) {
+      setName(product.name);
+      setPrice(product.price);
+      setImage(product.image);
+      setBrand(product.brand);
+      setCategory(product.category);
+      setCountInStock(product.countInStock);
+      setDescription(product.description);
+    }
+  }, [product]);
+
+  const [uploadProductImage, { isLoading: loadingUpload }] =
+    useUploadProductImageMutation();
+  
+  const handleImageChange = (e) => setImage(e.target.files[0])
+
+  const uploadImageHandler = async () => {
+    let newImage
+    if (image?.name) {
+       newImage = new File(
+        [image],
+        modifiedImageName(productId, image?.name),
+        {
+          type: image.type,
+          lastModified: image.lastModified,
+        },
+      );
+    }
+
+    const formData = new FormData();
+    formData.append('image', newImage);
+
+    try {
+      await uploadProductImage(formData).unwrap();
+    } catch (err) {
+      toast.error(err?.data?.message || err.error);
+    }
+  };
+  
+
 
   const [updateProduct, { isLoading: loadingUpdate }] =
     useUpdateProductMutation();
@@ -39,12 +83,19 @@ const ProductEditScreen = () => {
         productId,
         name,
         price,
-        image,
+        image: {
+          name: modifiedImageName(productId, image?.name),
+          type: image?.type,
+          lastModified: image?.lastModified,
+        },
         brand,
         category,
         description,
         countInStock,
       });
+
+      await uploadImageHandler()
+
       toast.success('product updated successfully');
       refetch();
       navigate('/admin/productlist');
@@ -52,18 +103,6 @@ const ProductEditScreen = () => {
       toast.error(err?.data?.message || err.error);
     }
   };
-
-  useEffect(() => {
-    if (product) {
-      setName(product.name);
-      setPrice(product.price);
-      setImage(product.image);
-      setBrand(product.brand);
-      setCategory(product.category);
-      setCountInStock(product.countInStock);
-      setDescription(product.description);
-    }
-  }, [product]);
 
   return (
     <div className="container mx-auto px-4 py-8">
@@ -103,7 +142,22 @@ const ProductEditScreen = () => {
               />
             </div>
 
-            {/* IMAGE INPUT PLACEHOLDER */}
+            <div className="mb-4">
+              <label htmlFor="image" className="block text-sm font-medium text-gray-700">Image</label>
+              <input
+                disabled
+                value={originalImageName(image?.name)}
+                className="mt-1 p-2 bg-white block w-full border border-gray-300 rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+              />
+              <input
+                type="file"
+                name="image"
+                label="Choose File"
+                accept="image/*"
+                onChange={(e) => handleImageChange(e)}
+                className='mt-1 pt-2 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100'
+              />
+              </div>
 
             <div className="mb-4">
               <label htmlFor="brand" className="block text-sm font-medium text-gray-700">Brand</label>

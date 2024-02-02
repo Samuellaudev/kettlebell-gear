@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { useNavigate, useParams, Link } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 import { addToCart } from '../slices/cartSlice';
-import { useGetProductDetailsQuery } from '../slices/productsApiSlice';
+import { useGetProductDetailsQuery, useGetProductImageQuery } from '../slices/productsApiSlice';
 import Rating from '../components/Rating';
 import Loader from '../components/Loader';
 import Message from '../components/Message';
@@ -10,6 +10,9 @@ import Message from '../components/Message';
 const ProductScreen = () => {
   const { id: productId } = useParams();
   const { data: product, isLoading, error } = useGetProductDetailsQuery(productId);
+  
+  const imageName = product ? product.image.name : ''
+  const { data: imgData, isLoading: imgLoading, error: imgError } = useGetProductImageQuery(imageName);
 
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -37,7 +40,9 @@ const ProductScreen = () => {
           <>
             <div className="grid grid-cols-12 gap-2">
               <div className="w-full col-span-full md:col-span-5 py-4">
-                <img src={ product.image } alt={ product.name } className="rounded-md" />
+                { imgLoading? <Loader /> : (
+                  <img src={ imgData.url } alt={ product.name } className="rounded-md" />
+                )}
               </div>
               <div className="w-full col-span-full md:col-span-4 p-4">
                 <h3 className="text-3xl font-semibold mb-2">{ product.name }</h3>

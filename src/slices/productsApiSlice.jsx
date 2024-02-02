@@ -1,4 +1,4 @@
-import { PRODUCTS_URL } from '../utils/constants';
+import { PRODUCTS_URL, AWS_S3_UPLOAD_URL, AWS_S3_GET_URL } from '../utils/constants';
 import { apiSlice } from './apiSlice';
 
 export const productsApiSlice = apiSlice.injectEndpoints({
@@ -36,6 +36,20 @@ export const productsApiSlice = apiSlice.injectEndpoints({
         method: 'DELETE',
       }),
     }),
+    uploadProductImage: builder.mutation({
+      query: (data) => ({
+        url: `${AWS_S3_UPLOAD_URL}`,
+        method: 'POST',
+        body: data,
+      }),
+      invalidatesTags: ['Product'],
+    }),
+    getProductImage: builder.query({
+      query: (imgName) => ({
+        url: `${AWS_S3_GET_URL}/${imgName}`,
+      }),
+      keepUnusedDataFor: 5,
+    }),    
   }),
 });
 
@@ -45,4 +59,6 @@ export const {
   useCreateProductMutation,
   useUpdateProductMutation,
   useDeleteProductMutation,
+  useUploadProductImageMutation,
+  useGetProductImageQuery,
 } = productsApiSlice;
