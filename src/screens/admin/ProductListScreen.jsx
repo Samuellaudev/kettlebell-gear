@@ -85,7 +85,7 @@ const ProductListScreen = () => {
                   <td className="border px-4 py-2">{product.brand}</td>
                   <td className="border px-4 py-2 flex space-x-4 justify-center items-center">
                     <Link to={`/admin/product/${product._id}/edit`} className="btn btn-secondary mr-2">
-                      <FaEdit />
+                    <FaEdit className='my-[0.5rem]'/>
                     </Link>
                     <button
                       className="btn btn-danger"
