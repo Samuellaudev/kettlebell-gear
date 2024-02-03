@@ -4,9 +4,9 @@ import { useDispatch, useSelector } from 'react-redux';
 import { addToCart } from '../slices/cartSlice';
 import {
   useGetProductDetailsQuery,
-  useGetProductImageQuery,
   useCreateReviewMutation
 } from '../slices/productsApiSlice';
+import ProductImage from '../components/ProductImage';
 import Rating from '../components/Rating';
 import Loader from '../components/Loader';
 import Message from '../components/Message';
@@ -20,9 +20,6 @@ const ProductScreen = () => {
     error,
     refetch
   } = useGetProductDetailsQuery(productId);
-  
-  const imageName = product ? product.image.name : ''
-  const { data: imgData, isLoading: imgLoading, error: imgError } = useGetProductImageQuery(imageName);
 
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -77,9 +74,7 @@ const ProductScreen = () => {
           <>
             <div className="grid grid-cols-12 gap-2">
               <div className="w-full col-span-full md:col-span-5 py-4">
-                { imgLoading? <Loader /> : (
-                  <img src={ imgData.url } alt={ product.name } className="rounded-md" />
-                )}
+                <ProductImage product={ product } />
               </div>
               <div className="w-full col-span-full md:col-span-4 p-4">
                 <h3 className="text-3xl font-semibold mb-2">{ product.name }</h3>
