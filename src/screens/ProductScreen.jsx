@@ -10,6 +10,7 @@ import ProductImage from '../components/ProductImage';
 import Rating from '../components/Rating';
 import Loader from '../components/Loader';
 import Message from '../components/Message';
+import Meta from '../components/Meta';
 import { toast } from 'react-toastify';
 
 const ProductScreen = () => {
@@ -72,6 +73,7 @@ const ProductScreen = () => {
         <Message variant='error'>{ error?.data.message || error?.error }</Message>
         ) : (
           <>
+            <Meta title={product.name} />
             <div className="grid grid-cols-12 gap-2">
               <div className="w-full col-span-full md:col-span-5 py-4">
                 <ProductImage product={ product } />
