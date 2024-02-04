@@ -69,7 +69,7 @@ const Navbar = () => {
           <NavLink to="/">
             <img
               className="w-auto h-14"
-              src="/src/assets/Logo.png"
+              src="/Logo.png"
               alt="Logo"
             />
           </NavLink>
