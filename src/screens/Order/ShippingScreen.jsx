@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import { saveShippingAddress } from '../../slices/cartSlice';
 import FormContainer from '../../components/FormContainer';
 import CheckoutSteps from '../../components/CheckoutSteps';
+import FormInput from '../../components/Form/FormInput';
 
 const ShippingScreen = () => {
   const cart = useSelector((state) => state.cart);
@@ -27,62 +28,73 @@ const ShippingScreen = () => {
   return (
     <FormContainer>
       <CheckoutSteps step1 step2 />
-      <h1 className="text-3xl font-bold mb-4">Shipping</h1>
-      <form onSubmit={submitHandler}>
-        <div className="my-2">
-          <label htmlFor="address" className="block mb-1">Address</label>
-          <input
-            id="address"
-            type="text"
-            placeholder="Enter address"
-            value={address}
-            required
-            onChange={(e) => setAddress(e.target.value)}
-            className="w-full px-3 py-2 border rounded-md bg-white focus:outline-none focus:border-blue-500"
-          />
-        </div>
+      <div className="w-full max-w-sm mx-auto overflow-hidden bg-white rounded-lg shadow-md">
+        <div className="px-6 py-4">
+          <h3 className="mt-3 text-xl font-medium text-center text-gray-600">Shipping</h3>
+          <form onSubmit={submitHandler}>
+            <div className="w-full mt-4">
+              <label htmlFor="address">Address</label>
+              <FormInput
+                id="address"
+                type="text"
+                placeholder="Enter address"
+                value={address}
+                onChange={(e) => setAddress(e.target.value)}
+                ariaLabel="Address"
+                required={true}
+              />
+            </div>
 
-        <div className="my-2">
-          <label htmlFor="city" className="block mb-1">City</label>
-          <input
-            id="city"
-            type="text"
-            placeholder="Enter city"
-            value={city}
-            required
-            onChange={(e) => setCity(e.target.value)}
-            className="w-full px-3 py-2 border rounded-md bg-white focus:outline-none focus:border-blue-500"
-          />
-        </div>
+            <div className="w-full mt-4">
+              <label htmlFor="city">City</label>
+              <FormInput
+                id="city"
+                type="text"
+                placeholder="Enter city"
+                value={city}
+                onChange={(e) => setCity(e.target.value)}
+                ariaLabel="City"
+                required={true}
+              />
+            </div>
 
-        <div className="my-2">
-          <label htmlFor="postalCode" className="block mb-1">Postal Code</label>
-          <input
-            id="postalCode"
-            type="text"
-            placeholder="Enter postal code"
-            value={postalCode}
-            required
-            onChange={(e) => setPostalCode(e.target.value)}
-            className="w-full px-3 py-2 border rounded-md bg-white focus:outline-none focus:border-blue-500"
-          />
-        </div>
+            <div className="w-full mt-4">
+              <label htmlFor="city">Postal Code</label>
+              <FormInput
+                id="postalCode"
+                type="text"
+                placeholder="Enter postal code"
+                value={postalCode}
+                onChange={(e) => setPostalCode(e.target.value)}
+                ariaLabel="Postal Code"
+                required={true}
+              />
+            </div>
 
-        <div className="my-2">
-          <label htmlFor="country" className="block mb-1">Country</label>
-          <input
-            id="country"
-            type="text"
-            placeholder="Enter country"
-            value={country}
-            required
-            onChange={(e) => setCountry(e.target.value)}
-            className="w-full px-3 py-2 border rounded-md bg-white focus:outline-none focus:border-blue-500"
-          />
-        </div>
+            <div className="w-full mt-4">
+              <label htmlFor="city">Country</label>
+              <FormInput
+                id="country"
+                type="text"
+                placeholder="Enter country"
+                value={country}
+                onChange={(e) => setCountry(e.target.value)}
+                ariaLabel="Country"
+                required={true}
+              />
+            </div>
 
-        <button type="submit" className="w-full py-2 bg-blue-500 text-white font-semibold rounded-md focus:outline-none focus:bg-blue-600">Continue</button>
-      </form>
+            <div className="flex items-center justify-center my-4">
+              <button
+                type="submit"
+                className="w-full px-6 py-2 text-sm font-medium tracking-wide text-white capitalize transition-colors duration-300 transform bg-blue-500 rounded-lg hover:bg-blue-400 focus:outline-none focus:ring focus:ring-blue-300 focus:ring-opacity-50"
+              >
+                  Continue
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
     </FormContainer>
   );
 };

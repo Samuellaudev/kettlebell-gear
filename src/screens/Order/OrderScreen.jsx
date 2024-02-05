@@ -4,6 +4,7 @@ import { PayPalButtons, usePayPalScriptReducer } from '@paypal/react-paypal-js';
 import { useSelector } from 'react-redux';
 import Message from '../../components/Message';
 import Loader from '../../components/Loader';
+import ProductImage from '../../components/ProductImage';
 import {
   usePayOrderMutation,
   useGetOrderDetailsQuery,
@@ -110,45 +111,62 @@ const OrderScreen = () => {
   ) : error ? (
     <Message variant='error'>{error.data.message}</Message>
   ) : (
-    <>
-      <h1 className="text-2xl font-bold mb-4">Order {order._id}</h1>
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-        <div>
-          <div className="bg-white p-4 rounded shadow-md">
+    <div className="container px-4 py-8 mx-auto">
+      <div className="sm:flex sm:items-center sm:justify-between">
+        <h2 className="text-xl font-medium text-gray-800 mb-4">Order { order._id }</h2>
+      </div>
+      <div className='flex flex-col md:flex-row md:justify-between'>
+        <div className='w-full md:w-7/12 border p-4 rounded-md'>
+          <div className="bg-white border-b-[1.5px] pb-6">
             <h2 className="text-xl font-semibold mb-4">Shipping</h2>
-            <p><strong>Name:</strong> {order.user.name}</p>
-            <p><strong>Email:</strong> <a href={`mailto:${order.user.email}`}>{order.user.email}</a></p>
-            <p><strong>Address:</strong> {order.shippingAddress.address}, {order.shippingAddress.city} {order.shippingAddress.postalCode}, {order.shippingAddress.country}</p>
-            {order.isDelivered ? (
-              <Message variant='success'>Delivered on {order.deliveredAt}</Message>
-            ) : (
-              <Message variant='warning'>Not Delivered</Message>
-            )}
+            <p className="font-medium text-gray-600 mb-2">
+              <strong>Name:</strong> { order.user.name }
+              </p>
+            <p className="font-medium text-gray-600 mb-2">
+              <strong>Email:</strong> <a href={ `mailto:${ order.user.email }` }>{ order.user.email }</a>
+            </p>
+            <p className="font-medium text-gray-600 mb-2">
+              <strong>Address:</strong> { order.shippingAddress.address }, { order.shippingAddress.city } { order.shippingAddress.postalCode }, { order.shippingAddress.country }
+                </p>
+            <div className='mt-4'>
+              {order.isDelivered ? (
+                <Message variant='success'>Delivered on {order.deliveredAt}</Message>
+              ) : (
+                <Message variant='warning'>Not Delivered</Message>
+              ) }
+            </div>
           </div>
 
-          <div className="bg-white p-4 rounded shadow-md mt-4">
+          <div className="bg-white mt-4 border-b-[1.5px] pb-6">
             <h2 className="text-xl font-semibold mb-4">Payment Method</h2>
-            <p><strong>Method:</strong> {order.paymentMethod}</p>
-            {order.isPaid ? (
+            <p className="font-medium text-gray-600 mb-2">
+              <strong>Method:</strong> { order.paymentMethod }
+            </p>
+            
+            <div className='mt-4'>
+              { order.isPaid ? (
               <Message variant='success'>Paid on {order.paidAt}</Message>
             ) : (
               <Message variant='warning'>Not Paid</Message>
             )}
+            </div>
           </div>
 
-          <div className="bg-white p-4 rounded shadow-md mt-4">
+          <div className="bg-white mt-4">
             <h2 className="text-xl font-semibold mb-4">Order Items</h2>
             {order.orderItems.length === 0 ? (
               <Message>Order is empty</Message>
             ) : (
               <ul>
                 {order.orderItems.map((item, index) => (
-                  <li key={index} className="bg-white p-4 mb-4 shadow">
+                  <li key={index} className="bg-white mb-4">
                     <div className="flex items-center">
-                      <img src={item.image} alt={item.name} className="w-16 h-16 rounded-md mr-4" />
+                      <ProductImage product={item } alt={item.name} customClass="w-16 rounded-md mr-4" />
                       <div>
                         <Link to={`/product/${item.product}`} className="text-blue-500 font-semibold">{item.name}</Link>
-                        <p>{item.qty} x ${item.price} = ${(item.qty * item.price).toFixed(2)}</p>
+                        <p className='font-medium text-gray-600'>
+                          { item.qty } x ${ item.price } = ${ (item.qty * item.price).toFixed(2) }
+                        </p>
                       </div>
                     </div>
                   </li>
@@ -158,8 +176,8 @@ const OrderScreen = () => {
           </div>
         </div>
 
-        <div>
-          <div className="bg-white p-4 rounded shadow-md">
+        <div className='w-full md:w-4/12 md:mx-auto mt-6 md:mt-0'>
+          <div className="bg-white p-4 rounded border">
             <h2 className="text-xl font-semibold mb-4">Order Summary</h2>
             <div className="flex justify-between mb-2">
               <span>Items</span>
@@ -178,29 +196,31 @@ const OrderScreen = () => {
               <span>${order.totalPrice}</span>
             </div>
 
-            { !order.isPaid && (
-              <>
-                { loadingPay && <Loader /> }
-                {isPending ? (
-                  <Loader />
-                ) : (
-                  <>
-                    {/* THIS BUTTON IS FOR TESTING! */}
-                    {/* <button
-                      onClick={ onApproveTest }
-                      className='p-3 my-3 bg-gray-600 text-white rounded-md'
-                    >
-                      Test Pay Order
-                    </button> */}
-                    <PayPalButtons
-                      createOrder={createOrder}
-                      onApprove={onApprove}
-                      onError={onError}
-                    ></PayPalButtons>
-                  </>
-                )}
-              </>
-            )}
+            <div className='mt-6'>
+              { !order.isPaid && (
+                <>
+                  { loadingPay && <Loader /> }
+                  {isPending ? (
+                    <Loader />
+                  ) : (
+                    <>
+                      {/* THIS BUTTON IS FOR TESTING! */}
+                      {/* <button
+                        onClick={ onApproveTest }
+                        className='p-3 my-3 bg-gray-600 text-white rounded-md'
+                      >
+                        Test Pay Order
+                      </button> */}
+                      <PayPalButtons
+                        createOrder={createOrder}
+                        onApprove={onApprove}
+                        onError={onError}
+                      ></PayPalButtons>
+                    </>
+                  )}
+                </>
+              ) }
+            </div>
 
             {loadingDeliver && <Loader />}
 
@@ -221,7 +241,7 @@ const OrderScreen = () => {
           </div>
         </div>
       </div>
-    </>
+    </div>
   );
 };
 

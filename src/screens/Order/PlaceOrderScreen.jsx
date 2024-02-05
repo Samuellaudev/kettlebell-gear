@@ -7,6 +7,7 @@ import FormContainer from '../../components/FormContainer';
 import CheckoutSteps from '../../components/CheckoutSteps';
 import Message from '../../components/Message';
 import Loader from '../../components/Loader';
+import ProductImage from '../../components/ProductImage';
 import { toast } from 'react-toastify';
 
 const PlaceOrderScreen = () => {
@@ -47,34 +48,38 @@ const PlaceOrderScreen = () => {
   return (
     <FormContainer>
       <CheckoutSteps step1 step2 step3 step4 />
-      <div className="flex">
-        <div className="w-8/12">
+      <div className="flex flex-col md:flex-row">
+        <div className="w-full md:w-8/12 max-w-sm mx-auto overflow-hidden bg-white rounded-lg shadow-md">
           <div className="bg-white p-4">
             <h2 className="text-xl font-semibold mb-4">Shipping</h2>
-            <p className="mb-4">
+            <p className="font-medium text-gray-600">
               <strong>Address:</strong> {cart.shippingAddress.address}, {cart.shippingAddress.city}{' '}
               {cart.shippingAddress.postalCode}, {cart.shippingAddress.country}
             </p>
           </div>
 
-          <div className="bg-white p-4 mt-4">
+          <div className="bg-white p-4">
             <h2 className="text-xl font-semibold mb-4">Payment Method</h2>
-            <p><strong>Method:</strong> {cart.paymentMethod}</p>
+            <p className='font-medium text-gray-600'>
+              Method: { cart.paymentMethod }
+            </p>
           </div>
 
-          <div className="bg-white p-4 mt-4">
+          <div className="bg-white p-4">
             <h2 className="text-xl font-semibold mb-4">Order Items</h2>
             {cart.cartItems.length === 0 ? (
               <Message>Your cart is empty</Message>
             ) : (
               <ul>
                 {cart.cartItems.map((item, index) => (
-                  <li key={index} className="bg-white p-4 mb-4">
+                  <li key={index} className="bg-white mb-4">
                     <div className="flex items-center">
-                      <img src={item.image} alt={item.name} className="w-16 h-16 rounded-md mr-4" />
+                      <ProductImage product={item } alt={item.name} customClass="w-16 rounded-md mr-4" />
                       <div>
                         <Link to={`/product/${item.product}`} className="text-blue-500 font-semibold">{item.name}</Link>
-                        <p>{item.qty} x ${item.price} = ${(item.qty * (item.price * 100)) / 100}</p>
+                        <p className='font-medium text-gray-600'>
+                          { item.qty } x ${ item.price } = ${ (item.qty * (item.price * 100)) / 100 }
+                        </p>
                       </div>
                     </div>
                   </li>
@@ -84,8 +89,8 @@ const PlaceOrderScreen = () => {
           </div>
         </div>
 
-        <div className="w-4/12 ml-8">
-          <div className="bg-white p-4 shadow">
+        <div className="w-full md:w-4/12 mt-8 md:mt-0 md:ml-8 max-w-sm mx-auto overflow-hidden bg-white rounded-lg shadow-md">
+          <div className="p-4">
             <h2 className="text-xl font-semibold mb-4">Order Summary</h2>
             <div className="flex justify-between mb-2">
               <span>Items</span>
@@ -108,7 +113,7 @@ const PlaceOrderScreen = () => {
                 <Message variant='danger'>{error?.data.message}</Message>
               )}
             </div>
-            <div className="mt-4">
+            <div className="my-4">
               <button
                 type='button'
                 className='bg-blue-500 text-white py-2 px-4 w-full rounded-md cursor-pointer disabled:opacity-50'
