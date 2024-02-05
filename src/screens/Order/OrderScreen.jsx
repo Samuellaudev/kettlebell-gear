@@ -116,6 +116,7 @@ const OrderScreen = () => {
         <h2 className="text-xl font-medium text-gray-800 mb-4">Order { order._id }</h2>
       </div>
       <div className='flex flex-col md:flex-row md:justify-between'>
+        {/* Order */}
         <div className='w-full md:w-7/12 border p-4 rounded-md'>
           <div className="bg-white border-b-[1.5px] pb-6">
             <h2 className="text-xl font-semibold mb-4">Shipping</h2>
@@ -176,6 +177,7 @@ const OrderScreen = () => {
           </div>
         </div>
 
+        {/* Order Summary */}
         <div className='w-full md:w-4/12 md:mx-auto mt-6 md:mt-0'>
           <div className="bg-white p-4 rounded border">
             <h2 className="text-xl font-semibold mb-4">Order Summary</h2>
