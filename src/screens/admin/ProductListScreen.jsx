@@ -1,9 +1,11 @@
+import { useState } from 'react'
 import { Link } from 'react-router-dom';
 import { useParams } from 'react-router-dom';
 import { FaEdit, FaPlus, FaTrash } from 'react-icons/fa';
 import Message from '../../components/Message';
 import Loader from '../../components/Loader';
 import Paginate from '../../components/Paginate';
+import Modal from '../../components/Modal';
 import {
   useGetProductsQuery,
   useCreateProductMutation,
@@ -18,97 +20,155 @@ const ProductListScreen = () => {
     pageNumber,
   });
 
+  const [isOpen, setIsOpen] = useState(false);
+  const [dialog, setDialog] = useState({})
+
+  const openModal = () => setIsOpen(true);
+  const closeModal = () => setIsOpen(false);
+
+  const handleCreateClick = () => {
+    setDialog({
+      title: 'Are you sure you want to create a new product?',
+      handleYesClick: createProductHandler,
+      yesButtonText: 'Yes',
+      handleNoClick: closeModal,
+      noButtonText: 'No',
+    })
+    openModal()
+  }
+
   const [createProduct, { isLoading: loadingCreate }] =
-    useCreateProductMutation();
+  useCreateProductMutation();
 
   const createProductHandler = async () => {
-    if (window.confirm('Are you sure you want to create a new product?')) {
       try {
         await createProduct();
         refetch();
+
+        closeModal()
         toast.success('Product created successfully')
       } catch (err) {
         toast.error(err?.data?.message || err.error);
       }
-    }
   };
+
+  const handleDeleteClick = (product) => {
+    setDialog({
+      title: `Are you sure you want do delete '${product.name}'?`,
+      handleYesClick: () => deleteHandler(product),
+      yesButtonText: 'Yes',
+      handleNoClick: closeModal,
+      noButtonText: 'No',
+    })
+    openModal()
+  }
 
   const [deleteProduct, { isLoading: loadingDelete }] =
     useDeleteProductMutation();
   
     const deleteHandler = async (product) => {
-      if (window.confirm(`Are you sure you want do delete '${product.name}'`)) {
         try {
           await deleteProduct(product._id);
           refetch();
-          toast.success('Product deleted')
+
+          closeModal()
+          toast.success('Product deleted successfully')
         } catch (err) {
           toast.error(err?.data?.message || err.error);
         }
-      }
     };
 
   return (
-    <div className="container mx-auto px-4 py-8">
-      <div className="flex items-center justify-between">
-        <h1 className="text-3xl font-semibold">Products</h1>
-        <button
-          onClick={createProductHandler}
-          className="flex items-center px-4 py-1 border-2 rounded-md"
-          disabled={loadingCreate}
-        >
-          <FaPlus className="mr-2" /> Create Product
-        </button>
-      </div>
-      
-      { loadingCreate && <Loader /> }
-      { loadingDelete && <Loader /> }
+    <>
+      <Modal
+        isOpen={isOpen}
+        openModal={openModal}
+        closeModal={closeModal}
+        dialog={ dialog }
+        handleYesClick={dialog.handleYesClick}
+        handleNoClick={dialog.handleNoClick}
+      />
+      <div className="container px-4 py-8 mx-auto">
+        <div className="sm:flex sm:items-center sm:justify-between">
+          <h2 className="text-lg font-medium text-gray-800 ">Products</h2>
+          <div className="flex items-center mt-4">
+            <button
+              onClick={handleCreateClick}
+              disabled={loadingCreate}
+              className="flex items-center w-auto px-4 py-2 text-sm text-gray-800 transition-colors duration-200 bg-white border rounded-lg sm:w-auto  hover:bg-gray-100 ">
+                  <FaPlus className="mr-2" /> Create Product
+              </button>
+          </div>
+        </div>
 
-      {isLoading ? (
-        <Loader />
-      ) : error ? (
-        <Message variant='error'>{error?.data.message}</Message>
-      ) : (
+        { loadingCreate && <Loader /> }
+        { loadingDelete && <Loader /> }
+
+        {isLoading ? (
+          <Loader />
+        ) : error ? (
+          <Message variant='error'>{error?.data.message}</Message>
+        ) : (
         <>
-          <table className="w-full border-collapse table-auto">
-            <thead>
-              <tr>
-                <th className="px-4 py-2">ID</th>
-                <th className="px-4 py-2">NAME</th>
-                <th className="px-4 py-2">PRICE</th>
-                <th className="px-4 py-2">CATEGORY</th>
-                <th className="px-4 py-2">BRAND</th>
-                <th className="px-4 py-2">ACTIONS</th>
-              </tr>
-            </thead>
-            <tbody>
-              {data.products.map((product) => (
-                <tr key={product._id}>
-                  <td className="border px-4 py-2">{product._id}</td>
-                  <td className="border px-4 py-2">{product.name}</td>
-                  <td className="border px-4 py-2">${product.price}</td>
-                  <td className="border px-4 py-2">{product.category}</td>
-                  <td className="border px-4 py-2">{product.brand}</td>
-                  <td className="border px-4 py-2 flex space-x-4 justify-center items-center">
-                    <Link to={`/admin/product/${product._id}/edit`} className="btn btn-secondary mr-2">
-                    <FaEdit className='my-[0.5rem]'/>
-                    </Link>
-                    <button
-                      className="btn btn-danger"
-                      onClick={() => deleteHandler(product)}
-                      disabled={loadingDelete}
-                    >
-                        <FaTrash className='text-xl p-1 bg-red-500 text-white rounded-sm'/>
-                    </button>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-          <Paginate pages={data.pages} page={data.page} isAdmin={true} />
+          <div className="flex flex-col mt-6 px-4 md:px-0">
+            <div className="-mx-4 -my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
+              <div className="inline-block min-w-full py-2 align-middle md:px-6 lg:px-8">
+                <div className="overflow-hidden border border-gray-200 md:rounded-lg">
+                  <table className="min-w-full divide-y divide-gray-200">
+                    <thead className="bg-gray-50">
+                      <tr>
+                        <th scope="col" className="py-3.5 px-4 text-sm font-normal text-center rtl:text-right text-gray-500">
+                          ID
+                        </th>
+                        <th scope="col" className="px-12 py-3.5 text-sm font-normal text-center rtl:text-right text-gray-500">
+                            NAME
+                        </th>
+                        <th scope="col" className="px-4 py-3.5 text-sm font-normal text-center rtl:text-right text-gray-500">
+                            PRICE
+                        </th>
+                        <th scope="col" className="px-4 py-3.5 text-sm font-normal text-center rtl:text-right text-gray-500">
+                          CATEGORY
+                        </th>
+                        <th scope="col" className="px-4 py-3.5 text-sm font-normal text-center rtl:text-right text-gray-500">
+                          BRAND
+                        </th>
+                        <th scope="col" className="px-4 py-3.5 text-sm font-normal text-center rtl:text-right text-gray-500">
+                          ACTIONS
+                        </th>
+                      </tr>
+                    </thead>
+                    <tbody className="bg-white divide-y divide-gray-200">
+                      {data.products.map((product) => (
+                        <tr key={product._id}>
+                          <td className="px-4 py-4 text-sm text-gray-500 whitespace-nowrap">{product._id}</td>
+                          <td className="px-4 py-4 text-sm text-gray-500 whitespace-nowrap">{product.name}</td>
+                          <td className="px-4 py-4 text-sm text-gray-500 whitespace-nowrap">${product.price}</td>
+                          <td className="px-4 py-4 text-sm text-gray-500 whitespace-nowrap">{product.category}</td>
+                          <td className="px-4 py-4 text-sm text-gray-500 whitespace-nowrap">{product.brand}</td>
+                          <td className="px-4 py-4 text-sm text-gray-500 whitespace-nowrap flex space-x-4 justify-center items-center">
+                            <Link to={`/admin/product/${product._id}/edit`} className="btn btn-secondary mr-2">
+                            <FaEdit className='my-[0.5rem]'/>
+                            </Link>
+                            <button
+                              onClick={() => handleDeleteClick(product)}
+                              disabled={loadingDelete}
+                            >
+                              <FaTrash className='text-xl p-1 bg-red-500 text-white rounded-md'/>
+                            </button>
+                          </td>
+                        </tr>
+                    ))}
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+          </div>
+          <Paginate pages={ data.pages } page={ data.page } isAdmin={ true } />
         </>
-      ) }
-    </div>
+        )}
+      </div>
+    </>
   );
 };
 
