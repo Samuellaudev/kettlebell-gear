@@ -25,9 +25,7 @@ const ProductCarousel = () => {
     appendDots: dots => <ul className='text-white'>{dots}</ul>
   };
 
-  return isLoading ? (
-    <Loader />
-  ) : error ? (
+  return isLoading ? null : error ? (
     <Message variant='error'>{error?.data?.message || error.error}</Message>
   ) : (
     <div className='flex flex-row'>
