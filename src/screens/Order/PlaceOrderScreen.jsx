@@ -1,12 +1,12 @@
 import { useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
-import { useCreateOrderMutation } from '../slices/ordersApiSlice';
-import { clearCartItems } from '../slices/cartSlice';
-import FormContainer from '../components/FormContainer';
-import CheckoutSteps from '../components/CheckoutSteps';
-import Message from '../components/Message';
-import Loader from '../components/Loader';
+import { useCreateOrderMutation } from '../../slices/ordersApiSlice';
+import { clearCartItems } from '../../slices/cartSlice';
+import FormContainer from '../../components/FormContainer';
+import CheckoutSteps from '../../components/CheckoutSteps';
+import Message from '../../components/Message';
+import Loader from '../../components/Loader';
 import { toast } from 'react-toastify';
 
 const PlaceOrderScreen = () => {

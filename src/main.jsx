@@ -14,17 +14,18 @@ import PrivateRoute from './components/PrivateRoute';
 import AdminRoute from './components/AdminRoute';
 
 import App from './App.jsx'
-import HomeScreen from './screens/HomeScreen';
-import ProductScreen from './screens/ProductScreen';
-import CartScreen from './screens/CartScreen';
-import LoginScreen from './screens/LoginScreen';
-import RegisterScreen from './screens/RegisterScreen';
+import HomeScreen from './screens/Shopping/HomeScreen';
+import ProductScreen from './screens/Shopping/ProductScreen';
+import CartScreen from './screens/Shopping/CartScreen';
 
-import ShippingScreen from './screens/ShippingScreen';
-import PaymentScreen from './screens/PaymentScreen';
-import PlaceOrderScreen from './screens/PlaceOrderScreen';
-import OrderScreen from './screens/OrderScreen';
-import ProfileScreen from './screens/ProfileScreen';
+import LoginScreen from './screens/Authentication/LoginScreen';
+import RegisterScreen from './screens/Authentication/RegisterScreen';
+import ProfileScreen from './screens/Authentication/ProfileScreen';
+
+import ShippingScreen from './screens/Order/ShippingScreen';
+import PaymentScreen from './screens/Order/PaymentScreen';
+import PlaceOrderScreen from './screens/Order/PlaceOrderScreen';
+import OrderScreen from './screens/Order/OrderScreen';
 
 import OrderListScreen from './screens/admin/OrderListScreen';
 import ProductListScreen from './screens/admin/ProductListScreen';

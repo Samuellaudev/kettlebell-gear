@@ -1,16 +1,16 @@
 import { useState } from 'react';
 import { useNavigate, useParams, Link } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
-import { addToCart } from '../slices/cartSlice';
+import { addToCart } from '../../slices/cartSlice';
 import {
   useGetProductDetailsQuery,
   useCreateReviewMutation
-} from '../slices/productsApiSlice';
-import ProductImage from '../components/ProductImage';
-import Rating from '../components/Rating';
-import Loader from '../components/Loader';
-import Message from '../components/Message';
-import Meta from '../components/Meta';
+} from '../../slices/productsApiSlice';
+import ProductImage from '../../components/ProductImage';
+import Rating from '../../components/Rating';
+import Loader from '../../components/Loader';
+import Message from '../../components/Message';
+import Meta from '../../components/Meta';
 import { toast } from 'react-toastify';
 
 const ProductScreen = () => {

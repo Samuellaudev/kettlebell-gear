@@ -2,11 +2,11 @@ import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
 import { FaTimes } from 'react-icons/fa';
-import Message from '../components/Message';
-import Loader from '../components/Loader';
-import { useProfileMutation } from '../slices/usersApiSlice';
-import { useGetMyOrdersQuery } from '../slices/ordersApiSlice';
-import { setCredentials } from '../slices/authSlice';
+import Message from '../../components/Message';
+import Loader from '../../components/Loader';
+import { useProfileMutation } from '../../slices/usersApiSlice';
+import { useGetMyOrdersQuery } from '../../slices/ordersApiSlice';
+import { setCredentials } from '../../slices/authSlice';
 import { toast } from 'react-toastify';
 
 const ProfileScreen = () => {

@@ -2,14 +2,14 @@ import { useEffect } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import { PayPalButtons, usePayPalScriptReducer } from '@paypal/react-paypal-js';
 import { useSelector } from 'react-redux';
-import Message from '../components/Message';
-import Loader from '../components/Loader';
+import Message from '../../components/Message';
+import Loader from '../../components/Loader';
 import {
   usePayOrderMutation,
   useGetOrderDetailsQuery,
   useGetPaypalClientIdQuery,
   useDeliverOrderMutation
-} from '../slices/ordersApiSlice';
+} from '../../slices/ordersApiSlice';
 import { toast } from 'react-toastify';
 
 const OrderScreen = () => {
