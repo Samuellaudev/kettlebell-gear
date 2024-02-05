@@ -70,7 +70,6 @@ const ProductEditScreen = () => {
   };
   
 
-
   const [updateProduct, { isLoading: loadingUpdate }] =
     useUpdateProductMutation();
 
@@ -105,59 +104,67 @@ const ProductEditScreen = () => {
   };
 
   return (
-    <div className="container mx-auto px-4 py-8">
-      <Link to='/admin/productlist' className='btn btn-light my-3'>
+    <div className="container mx-auto px-4 py-6">
+      <Link
+        to='/admin/productlist'
+        className="inline-block py-2 px-4 mt-6 border rounded hover:bg-black hover:text-white transition duration-200"
+      >
         Go Back
       </Link>
       <FormContainer>
-        <h1 className="text-3xl mb-4">Edit Product</h1>
-        {loadingUpdate && <Loader />}
-        {isLoading ? (
-          <Loader />
-        ) : error ? (
-          <Message variant='danger'>{error}</Message>
-        ) : (
+        <div className="max-w-4xl p-6 mx-auto bg-white rounded-md shadow-md">
+          <h2 className="text-lg font-semibold text-gray-700 capitalize ">Edit Product</h2>
+          {loadingUpdate && <Loader />}
+          {isLoading ? (
+            <Loader />
+          ) : error ? (
+            <Message variant='error'>
+              {error?.data?.message || error.error}
+            </Message>
+          ) : (
           <form onSubmit={submitHandler}>
-            <div className="mb-4">
-              <label htmlFor="name" className="block text-sm font-medium text-gray-700">Name</label>
-              <input
-                type='name'
-                id='name'
-                placeholder='Enter name'
-                value={name}
-                onChange={(e) => setName(e.target.value)}
-                className="mt-1 p-2 bg-white block w-full border border-gray-300 rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500"
-              />
-            </div>
-
-            <div className="mb-4">
-              <label htmlFor="price" className="block text-sm font-medium text-gray-700">Price</label>
-              <input
-                type='number'
-                id='price'
-                placeholder='Enter price'
-                value={price}
-                onChange={(e) => setPrice(e.target.value)}
-                className="mt-1 p-2 bg-white block w-full border border-gray-300 rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500"
-              />
-            </div>
-
-            <div className="mb-4">
-              <label htmlFor="image" className="block text-sm font-medium text-gray-700">Image</label>
-              <input
-                disabled
-                value={originalImageName(image?.name)}
-                className="mt-1 p-2 bg-white block w-full border border-gray-300 rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500"
-              />
-              <input
-                type="file"
-                name="image"
-                label="Choose File"
-                accept="image/*"
-                onChange={(e) => handleImageChange(e)}
-                className='mt-1 pt-2 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100'
-              />
+            <div className="grid grid-cols-1 mt-4">
+              <div>
+                <label className="text-gray-700" htmlFor="name">Name</label>
+                <input
+                  type='name'
+                  id='name'
+                  placeholder='Enter name'
+                  value={name}
+                  onChange={(e) => setName(e.target.value)}
+                  className="block w-full px-4 py-2 mt-2 text-gray-700 bg-white border border-gray-200 rounded-md focus:border-blue-400 focus:ring-blue-300 focus:ring-opacity-40 focus:outline-none focus:ring"
+                />
               </div>
+
+              <div className="mb-4">
+                <label htmlFor="price" className="block text-sm font-medium text-gray-700">Price</label>
+                <input
+                  type='number'
+                  id='price'
+                  placeholder='Enter price'
+                  value={price}
+                  onChange={(e) => setPrice(e.target.value)}
+                  className="block w-full px-4 py-2 mt-2 text-gray-700 bg-white border border-gray-200 rounded-md focus:border-blue-400 focus:ring-blue-300 focus:ring-opacity-40 focus:outline-none focus:ring"
+                />
+              </div>
+
+              <div className="mb-4">
+                <label htmlFor="image" className="block text-sm font-medium text-gray-700">Image</label>
+                <input
+                  disabled
+                  value={originalImageName(image?.name)}
+                  className="block w-full px-4 py-2 mt-2 text-gray-700 bg-white border border-gray-200 rounded-md focus:border-blue-400 focus:ring-blue-300 focus:ring-opacity-40 focus:outline-none focus:ring"
+                />
+                <input
+                  type="file"
+                  name="image"
+                  label="Choose File"
+                  accept="image/*"
+                  onChange={(e) => handleImageChange(e)}
+                  className='mt-1 pt-2 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100'
+                />
+              </div>
+            </div>
 
             <div className="mb-4">
               <label htmlFor="brand" className="block text-sm font-medium text-gray-700">Brand</label>
@@ -167,19 +174,7 @@ const ProductEditScreen = () => {
                 placeholder='Enter brand'
                 value={brand}
                 onChange={(e) => setBrand(e.target.value)}
-                className="mt-1 p-2 bg-white block w-full border border-gray-300 rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500"
-              />
-            </div>
-
-            <div className="mb-4">
-              <label htmlFor="countInStock" className="block text-sm font-medium text-gray-700">Count In Stock</label>
-              <input
-                type='number'
-                id='countInStock'
-                placeholder='Enter countInStock'
-                value={countInStock}
-                onChange={(e) => setCountInStock(e.target.value)}
-                className="mt-1 p-2 bg-white block w-full border border-gray-300 rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+                className="block w-full px-4 py-2 mt-2 text-gray-700 bg-white border border-gray-200 rounded-md focus:border-blue-400 focus:ring-blue-300 focus:ring-opacity-40 focus:outline-none focus:ring"
               />
             </div>
 
@@ -191,7 +186,7 @@ const ProductEditScreen = () => {
                 placeholder='Enter category'
                 value={category}
                 onChange={(e) => setCategory(e.target.value)}
-                className="mt-1 p-2 bg-white block w-full border border-gray-300 rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+                className="block w-full px-4 py-2 mt-2 text-gray-700 bg-white border border-gray-200 rounded-md focus:border-blue-400 focus:ring-blue-300 focus:ring-opacity-40 focus:outline-none focus:ring"
               />
             </div>
 
@@ -203,18 +198,21 @@ const ProductEditScreen = () => {
                 placeholder='Enter description'
                 value={description}
                 onChange={(e) => setDescription(e.target.value)}
-                className="mt-1 p-2 bg-white block w-full border border-gray-300 rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+                className="block w-full px-4 py-2 mt-2 text-gray-700 bg-white border border-gray-200 rounded-md focus:border-blue-400 focus:ring-blue-300 focus:ring-opacity-40 focus:outline-none focus:ring"
               />
             </div>
 
-            <button
-              type='submit'
-              className="py-2 px-4 text-white bg-blue-500 hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50 rounded-md"
-            >
-              Update
-            </button>
+            <div className="mt-6">
+              <button
+                type='submit'
+                className="py-2 px-4 text-white bg-blue-500 hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50 rounded-md"
+              >
+                Update
+              </button>
+            </div>
           </form>
-        )}
+          ) }
+        </div>
       </FormContainer>
     </div>
   );
