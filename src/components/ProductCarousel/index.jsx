@@ -28,25 +28,46 @@ const ProductCarousel = () => {
   return isLoading ? null : error ? (
     <Message variant='error'>{error?.data?.message || error.error}</Message>
   ) : (
-    <div className='flex flex-row'>
-      <div className='hidden bg-black md:block md:w-full'>test</div>
-      <div className='w-full md:w-1/2 mx-auto -mb-1.5'>
-        <Slider {...settings}>
-          {products.map((product) => (
-            <div key={product._id} className='carousel-item relative'>
-              <Link to={ `/product/${ product._id }` }>
-                <ProductImage product={ product } customClass='w-full mx-auto' />
-                <div className={styles.carousel_caption}>
-                  <span className='block text-white p-6 text-3xl'>
-                    {product.name} (${product.price})
-                  </span>
-                </div>
-              </Link>
-            </div>
-          ))}
-        </Slider>
+    <div className='mt-28'>
+      <span className="flex items-center">
+        <span className="h-px flex-1 bg-gray-600"></span>
+          <span className="shrink-0 px-6">
+            <h1 className="text-4xl font-bold my-8 mt-6 italic text-center">BEST SELLERS</h1>
+          </span>
+        <span className="h-px flex-1 bg-gray-600"></span>
+      </span>
+      <div className='flex flex-row'>
+        <div className='hidden bg-black md:block md:w-full border-r-2 '>
+          <img
+            className="w-auto"
+            src="/images/carousel_left.png"
+            alt="Carousel Left Image"
+          />
+        </div>
+        <div className='w-full md:w-1/2 mx-auto -mb-1.5'>
+          <Slider {...settings}>
+            {products.map((product) => (
+              <div key={product._id} className='carousel-item relative'>
+                <Link to={ `/product/${ product._id }` }>
+                  <ProductImage product={ product } customClass='w-full mx-auto' />
+                  <div className={styles.carousel_caption}>
+                    <span className='block text-white p-6 text-lg md:text-xl'>
+                      {product.name} (${product.price})
+                    </span>
+                  </div>
+                </Link>
+              </div>
+            ))}
+          </Slider>
+        </div>
+        <div className='hidden bg-black md:block md:w-full border-l-2'>
+          <img
+            className="w-auto"
+            src="/images/carousel_right.png"
+            alt="Carousel Right Image"
+          />
+        </div>
       </div>
-      <div className='hidden bg-black md:block md:w-full'>test</div>
     </div>
   );
 };
