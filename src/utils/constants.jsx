@@ -1,4 +1,4 @@
-export const BASE_URL = 'https://shy-toga-colt.cyclic.app/'
+export const BASE_URL = 'https://files.kettlebell-gear.com/'
 
 export const PRODUCTS_URL = '/api/products';
 
