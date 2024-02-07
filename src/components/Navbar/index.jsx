@@ -11,8 +11,8 @@ const Navbar = () => {
   const { cartItems } = useSelector((state) => state.cart);
   const { userInfo } = useSelector((state) => state.auth);
 
-  const [isOpen, setIsOpen] = useState(false);
-  const toggleMenu = () => setIsOpen(!isOpen);
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const toggleMobileMenu = () => setIsMobileMenuOpen(!isMobileMenuOpen);
 
   // Menu
   const [isDropdownOpen, setIsDropdownOpen] = useState(true);
@@ -77,12 +77,12 @@ const Navbar = () => {
           {/* Mobile menu button */}
           <div className="flex lg:hidden">
             <button
-              onClick={toggleMenu}
+              onClick={toggleMobileMenu}
               type="button"
               className="text-gray-500  hover:text-gray-600  focus:outline-none focus:text-gray-600 "
               aria-label="toggle menu"
             >
-              {!isOpen ? (
+              {!isMobileMenuOpen ? (
                 <img
                   className="w-auto h-6"
                   src="/svg/menu/mobile-menu_open-button.svg"
@@ -102,35 +102,26 @@ const Navbar = () => {
         {/* Mobile Menu open: "block", Menu closed: "hidden" */}
         <div
           className={`${
-            isOpen ? "block" : "hidden"
+            isMobileMenuOpen ? "block" : "hidden"
           } absolute inset-x-0 z-20 w-full px-6 py-4 transition-all duration-300 ease-in-out bg-white  md:mt-0 md:p-0 md:top-0 md:relative md:bg-transparent md:w-auto md:opacity-100 md:translate-x-0 md:flex md:items-center`}
         >
           <div className="flex flex-col md:flex-row md:mx-6 items-center">
-          <SearchBox />
+          {/* <SearchBox /> */}
             <NavLink
               className="my-2 text-gray-700 transition-colors duration-300 transform  hover:text-blue-500 md:mx-4 md:my-0"
               to="/"
+              onClick={ toggleMobileMenu }
             >
               Home
             </NavLink>
             <NavLink
               className="my-2 text-gray-700 transition-colors duration-300 transform  hover:text-blue-500 md:mx-4 md:my-0"
               to="/shop"
+              onClick={ toggleMobileMenu }
             >
               Shop
             </NavLink>
-            <NavLink
-              className="my-2 text-gray-700 transition-colors duration-300 transform  hover:text-blue-500 md:mx-4 md:my-0"
-              to="/contact"
-            >
-              Contact
-            </NavLink>
-            <NavLink
-              className="my-2 text-gray-700 transition-colors duration-300 transform  hover:text-blue-500 md:mx-4 md:my-0"
-              to="/about"
-            >
-              About
-            </NavLink>
+            {/* To be confirmed: Contact & About */}
 
             {/* Logged-in User Links */}
             { userInfo ? (
@@ -149,11 +140,14 @@ const Navbar = () => {
                 </button>
                 {/* Dropdown menu */}
                 {isDropdownOpen && (
-                  <div onClick={ closeDropdown } className="absolute left-0 w-24 py-2 mt-2 origin-top-right bg-white rounded-md shadow-xl">
-                    <NavLink to="/profile" className="block px-4 py-2 text-gray-800 hover:bg-blue-500 hover:text-white">
+                  <div onClick={ closeDropdown } className="absolute left-24 -top-3 md:top-8 md:left-0 w-24 mt-2 origin-top-right bg-white rounded-md shadow-xl">
+                    <NavLink
+                      to="/profile"
+                      onClick={ toggleMobileMenu }
+                      className="block px-4 py-2 text-gray-800 rounded-md hover:bg-blue-500 hover:text-white">
                       Profile
                     </NavLink>
-                    <button onClick={logoutHandler} className="block w-full px-4 py-2 text-left text-gray-800 hover:bg-blue-500 hover:text-white">
+                    <button onClick={logoutHandler} className="block w-full px-4 py-2 text-left text-gray-800 rounded-md hover:bg-blue-500 hover:text-white">
                       Logout
                     </button>
                   </div>
@@ -170,7 +164,7 @@ const Navbar = () => {
 
             {/* Admin Links */ }
             { userInfo && userInfo.isAdmin && (
-              <div className="relative inline-block" ref={ adminDropdownRef }>
+              <div className="relative inline-block py-1" ref={ adminDropdownRef }>
                 {/* Admin Dropdown toggle button */}
                 <button
                     onClick={ toggleAdminDropdown }
@@ -185,14 +179,26 @@ const Navbar = () => {
                 </button>
                 {/* Admin Dropdown menu */}
                 {isAdminDropdownOpen && (
-                  <div onClick={ closeAdminDropdown } className="absolute left-0 w-24 py-2 mt-2 origin-top-right bg-white rounded-md shadow-xl">
-                    <NavLink to="/admin/productlist" className="block px-4 py-2 text-gray-800 hover:bg-blue-500 hover:text-white">
+                  <div onClick={ closeAdminDropdown } className="absolute left-24 -top-2 md:top-8 md:left-0 w-24 mt-2 origin-top-right bg-white rounded-md shadow-xl">
+                    <NavLink 
+                      to="/admin/productlist"
+                      onClick={ toggleMobileMenu }
+                      className="block px-4 py-2 text-gray-800 hover:bg-blue-500 hover:text-white rounded-md"
+                    >
                       Products
                     </NavLink>
-                    <NavLink to="/admin/orderlist" className="block px-4 py-2 text-gray-800 hover:bg-blue-500 hover:text-white">
+                    <NavLink 
+                      to="/admin/orderlist"
+                      onClick={ toggleMobileMenu }
+                      className="block px-4 py-2 text-gray-800 hover:bg-blue-500 hover:text-white rounded-md"
+                    >
                       Orders
                     </NavLink>
-                    <NavLink to="/admin/userlist" className="block px-4 py-2 text-gray-800 hover:bg-blue-500 hover:text-white">
+                    <NavLink 
+                      to="/admin/userlist"
+                      onClick={ toggleMobileMenu }
+                      className="block px-4 py-2 text-gray-800 hover:bg-blue-500 hover:text-white rounded-md"
+                    >
                       Users
                     </NavLink>
                   </div>
@@ -201,8 +207,9 @@ const Navbar = () => {
             )}
           </div>
 
-          <div className="flex flex-row justify-center">
+          <div className="flex flex-row justify-center py-1">
             <NavLink
+              onClick={ toggleMobileMenu }
               className="relative text-gray-700 transition-colors duration-300 transform  hover:text-gray-600"
               to="/cart"
             >
@@ -211,7 +218,6 @@ const Navbar = () => {
                 src="/svg/menu/cart.svg"
                 alt="cart"
                 />
-
               <span className="absolute top-0 left-0 p-1 text-xs text-white bg-blue-500 rounded-full"></span>
             </NavLink>
             <div>

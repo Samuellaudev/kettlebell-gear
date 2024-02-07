@@ -97,7 +97,13 @@ const CartScreen = () => {
           { cartItems.length === 0 ? (
             <div className='w-full flex items-start justify-start space-y-2'>
               <Message>
-                Your cart is empty. <Link to="/" className="text-blue-500">Go Back</Link>
+                Your cart is empty.{' '}
+              <Link
+                onClick={() => navigate(-1)}
+                className="text-blue-500"
+              >
+                Go Back
+              </Link>
               </Message>
               </div>
           ) : (
