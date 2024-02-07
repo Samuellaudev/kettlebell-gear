@@ -9,3 +9,14 @@ export const originalImageName = (imageName = '') => {
 
   return imageName;
 };
+
+export const productsByTimestamps = (filteredProducts) => {
+  const result = filteredProducts.map(item => {
+    return {
+      ...item,
+      createdAt: new Date(item.createdAt).getTime()
+    }
+  })
+
+  return result
+}
