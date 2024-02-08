@@ -3,24 +3,29 @@ import { useGetProductsQuery } from '../../slices/productsApiSlice';
 import Product from '../../components/Product';
 import Loader from '../../components/Loader';
 import Message from '../../components/Message';
-import Paginate from '../../components/Paginate';
 import ProductCarousel from '../../components/ProductCarousel';
 import Meta from '../../components/Meta';
 import { IconContext } from "react-icons";
 import { ImPower } from "react-icons/im";
+import { productsByTimestamps } from '../../utils/helpers'
 
 const HomeScreen = () => {
-  const { pageNumber, keyword } = useParams();
+  const { pageNumber } = useParams();
 
   const { data, isLoading, error } = useGetProductsQuery({
-    keyword,
     pageNumber
   });
+
+  let latestProducts = []
+  if (!isLoading) {
+    const createdDateDescending = productsByTimestamps(data.products).sort((a, b) => b.createdAt - a.createdAt);
+    
+    latestProducts = createdDateDescending.slice(0, 8)
+  }
 
   return (
     <div className='px-4 md:px-0'>
       <Meta />
-
       <section className="banner">
         <div className="mx-auto max-w-screen-xl px-4 py-32 lg:flex lg:h-screen lg:items-center bg-[url('/images/banner_pics.png')] bg-auto bg-right md:bg-contain md:bg-no-repeat">
           <div className="mx-auto max-w-xl text-center bg-white/80 px-2 py-4 rounded-md">
@@ -43,13 +48,7 @@ const HomeScreen = () => {
         </div>
       </section>
 
-      {!keyword ? (
-        <ProductCarousel />
-        ) : (
-        <Link to='/' className='btn btn-light mb-4'>
-          Go Back
-        </Link>
-      ) }
+      <ProductCarousel />
       
       <section className="features">
         <div className="container px-6 py-20 mt-12 mx-auto">
@@ -97,17 +96,12 @@ const HomeScreen = () => {
             <span className="h-px flex-1 bg-gray-600"></span>
           </span>
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-4 gap-4">
-            { data.products.map((product) => (
+            { latestProducts.map((product) => (
               <div key={ product._id }>
                 <Product product={ product } />
               </div>
             )) }
           </div>
-          <Paginate
-            pages={ data.pages }
-            page={ data.page }
-            keyword={ keyword ? keyword : '' } 
-          />
         </section>
       )}
 

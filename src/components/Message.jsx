@@ -21,7 +21,7 @@ const Message = ({ variant, children }) => {
   }
 
   return (
-    <div className={`p-4 rounded-md ${bgColor} ${textColor}`}>
+    <div className={`p-4 my-4 rounded-md text-center ${bgColor} ${textColor}`}>
       {children}
     </div>
   );
