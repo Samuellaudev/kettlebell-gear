@@ -1,8 +1,33 @@
-# React + Vite
+# MERN Stack & Redux - eCommerce Platform
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A dynamic eCommerce platform leveraging the MERN Stack & Redux for seamless online retail operations. Built with MongoDB, Express, React, Node.js, and Redux, it offers a scalable solution for managing inventory, processing transactions, and enhancing the shopping experience.
 
-Currently, two official plugins are available:
+## 🔗 URL
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+[MERN Stack & Redux - eCommerce Platform](https://www.kettlebell-gear.com/)
+
+## 🚀 Features
+
+- Comprehensive shopping cart features
+- Product reviews, ratings and pagination
+- Products, users and orders management system using JWT authorization with HttpOnly Cookie
+- Upload image using AWS S3 and retrieve it through presigned URLs
+- Implementing PayPal / credit card (Test Mode) for checkout process
+
+More project details [here](https://www.samuellau.dev/projects/mern-stack-kettlebell-gear)
+
+## 🛠 Build Setup
+
+This repository contains the frontend components, while the backend can be found in a separate [repository](https://github.com/Samuellaudev/kettlebell-gear-backend).
+
+```bash
+# install dependencies
+$ npm install
+
+# serve with hot reload at localhost:3000
+$ npm run dev
+
+# build for production and launch server
+$ npm run build
+$ npm run start
+```
