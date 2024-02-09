@@ -5,12 +5,12 @@ const Loader = ({customClass}) => {
   const options = {
     color: "gray",
     size: '2rem',
-    className: `global-class-name ${customClass}`
+    className: `global-class-name`
   }
 
   return (
     <IconContext.Provider value={ options }>
-      <div className="flex justify-center items-center absolute opacity-50 w-1/2 h-full bg-gray-300">
+      <div className={`${customClass} flex justify-center items-center opacity-50 w-full bg-gray-300/60 rounded-md`}>
         <ImSpinner11 className="animate-spin"/>
       </div>
     </IconContext.Provider>

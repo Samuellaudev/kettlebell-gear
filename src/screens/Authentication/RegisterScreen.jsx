@@ -52,12 +52,15 @@ const RegisterScreen = () => {
 
   return (
     <FormContainer>
-      { isLoading && <Loader /> }
       <div className="w-full max-w-sm mx-auto overflow-hidden bg-white rounded-lg shadow-md">
         <div className="px-6 py-4">
           <h3 className="mt-3 text-xl font-medium text-center text-gray-600">Register</h3>
           <p className="mt-1 text-center text-gray-500 ">Create account</p>
-          <form onSubmit={submitHandler}>
+          
+          { isLoading ? (
+            <Loader customClass='p-10 my-4'/>
+          ) : (
+          <form onSubmit={ submitHandler }>
             <div className="w-full mt-4">
               <FormInput
                 id="name"
@@ -116,6 +119,7 @@ const RegisterScreen = () => {
               </button>
             </div>
           </form>
+          )}
         </div>
 
         <div className="flex items-center justify-center py-4 text-center bg-gray-50">

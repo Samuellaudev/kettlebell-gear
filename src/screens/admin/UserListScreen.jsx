@@ -60,7 +60,7 @@ const UserListScreen = () => {
           <h2 className="text-lg font-medium text-gray-800 ">Users</h2>
         </div>
         {isLoading ? (
-          <Loader />
+          <Loader customClass='min-h-screen my-4'/>
         ) : error ? (
           <Message variant='error'>{error?.data.message}</Message>
         ) : (

@@ -101,11 +101,8 @@ const ProductListScreen = () => {
           </div>
         </div>
 
-        { loadingCreate && <Loader /> }
-        { loadingDelete && <Loader /> }
-
-        {isLoading ? (
-          <Loader />
+        {isLoading || loadingCreate || loadingDelete ? (
+          <Loader customClass='min-h-screen my-4'/>
         ) : error ? (
           <Message variant='error'>{error?.data.message}</Message>
         ) : (

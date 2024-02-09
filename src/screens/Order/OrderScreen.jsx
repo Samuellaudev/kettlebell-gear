@@ -107,7 +107,7 @@ const OrderScreen = () => {
   };
 
   return isLoading ? (
-    <Loader />
+    <Loader customClass='min-h-screen my-4'/>
   ) : error ? (
     <Message variant='error'>{error.data.message}</Message>
   ) : (
@@ -116,7 +116,7 @@ const OrderScreen = () => {
         <h2 className="text-xl font-medium text-gray-800 mb-4">Order { order._id }</h2>
       </div>
       <div className='flex flex-col md:flex-row md:justify-between'>
-        {/* Order */}
+        {/* Order Details */}
         <div className='w-full md:w-7/12 border p-4 rounded-md'>
           <div className="bg-white border-b-[1.5px] pb-6">
             <h2 className="text-xl font-semibold mb-4">Shipping</h2>
@@ -201,9 +201,8 @@ const OrderScreen = () => {
             <div className='mt-6'>
               { !order.isPaid && (
                 <>
-                  { loadingPay && <Loader /> }
-                  {isPending ? (
-                    <Loader />
+                  {isPending || loadingPay ? (
+                    <Loader customClass='p-10 my-4'/>
                   ) : (
                     <>
                       {/* THIS BUTTON IS FOR TESTING! */}
@@ -224,8 +223,7 @@ const OrderScreen = () => {
               ) }
             </div>
 
-            {loadingDeliver && <Loader />}
-
+            {loadingDeliver && <Loader customClass='p-10 my-4'/>}
             {userInfo &&
               userInfo.isAdmin &&
               order.isPaid &&

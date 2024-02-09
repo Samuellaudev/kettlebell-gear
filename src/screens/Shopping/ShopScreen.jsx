@@ -123,9 +123,10 @@ const ShopScreen = () => {
 
   return (
     <div className="container px-4 py-8 mx-auto">
-      <div className="sm:flex sm:items-center sm:justify-between w-full bg-gray-100">
+      <div className="sm:flex sm:items-center sm:justify-between w-full bg-[url('/images/kettlebell_shop_banner.png')] bg-cover bg-center md:bg-cover md:bg-no-repeat">
         <h2 className="text-4xl font-bold p-16 text-gray-800 mx-auto text-center">Kettlebells</h2>
       </div>
+
       <div className='flex flex-col md:flex-row md:space-x-4 py-10'>
 
         {/* Left panel */ }
@@ -239,7 +240,7 @@ const ShopScreen = () => {
 
         {/* Right panel */ }
         { isLoading ? (
-          <Loader customClass='mt-20' />
+          <Loader customClass='min-h-screen' />
         ) : error ? (
           <Message variant='error'>{ error?.data.message || error?.error }</Message>
         ) : filteredProducts?.length === 0 ? (

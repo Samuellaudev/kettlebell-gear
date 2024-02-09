@@ -60,7 +60,7 @@ const ProductScreen = () => {
   };
 
   const renderLoaderOrError = () => {
-    if (isLoading) return <Loader customClass='mt-20'/>;
+    if (isLoading) return <Loader customClass='my-4 min-h-screen'/>;
     if (error) return <Message variant='error'>{error?.data.message || error?.error}</Message>;
     return null;
   };
@@ -187,7 +187,7 @@ const ProductScreen = () => {
 
           <div className="flex flex-wrap">
             <div className="w-full p-4 md:p-0 md:w-full">
-              <h2 className="text-3xl pt-16 font-semibold text-gray-600 italic">CUSTOMER REVIEWS</h2>
+              <h2 className="text-3xl pt-16 font-semibold text-gray-600 text-center md:text-left italic">CUSTOMER REVIEWS</h2>
               <div className='flex flex-col md:flex-row md:space-x-20'>
                 { renderReviewForm() }
                 <div>

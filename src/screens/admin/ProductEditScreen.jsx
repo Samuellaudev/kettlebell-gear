@@ -114,9 +114,8 @@ const ProductEditScreen = () => {
       <FormContainer>
         <div className="max-w-4xl p-6 mx-auto bg-white rounded-md shadow-md">
           <h2 className="text-lg font-semibold text-gray-700 capitalize ">Edit Product</h2>
-          {loadingUpdate && <Loader />}
-          {isLoading ? (
-            <Loader />
+          {isLoading || loadingUpdate ? (
+            <Loader customClass='min-h-screen my-4'/>
           ) : error ? (
             <Message variant='error'>
               {error?.data?.message || error.error}

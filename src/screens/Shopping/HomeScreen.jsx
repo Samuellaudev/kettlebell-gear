@@ -83,7 +83,7 @@ const HomeScreen = () => {
       </section>
 
       { isLoading ? (
-        <Loader customClass='mt-20'/>
+        <Loader customClass='min-h-screen'/>
       ) : error ? (
         <Message variant='error'>{ error?.data.message || error?.error }</Message>
       ) : (

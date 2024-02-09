@@ -60,7 +60,7 @@ const UserEditScreen = () => {
           <h2 className="text-lg font-semibold text-gray-700 capitalize ">Edit User</h2>
 
           {isLoading ? (
-            <Loader />
+            <Loader customClass='min-h-screen my-4'/>
           ) : error ? (
             <Message variant='error'>
               {error?.data?.message || error.error}

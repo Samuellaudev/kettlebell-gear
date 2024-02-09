@@ -122,7 +122,7 @@ const PlaceOrderScreen = () => {
               >
                 Place Order
               </button>
-              {isLoading && <Loader />}
+              {isLoading && <Loader customClass='p-4 my-4'/>}
             </div>
           </div>
         </div>

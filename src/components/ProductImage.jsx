@@ -8,7 +8,7 @@ const ProductImage = ({ product, customClass }) => {
   return (
     <>
       {imgLoading ? (
-        <Loader />
+        <Loader customClass='p-10' />
       ) : (
           <img
             src={ imgData?.url }

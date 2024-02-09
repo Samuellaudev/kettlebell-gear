@@ -15,7 +15,7 @@ const OrderListScreen = () => {
       </div>
 
       {isLoading ? (
-        <Loader />
+        <Loader customClass='min-h-screen my-4' />
       ) : error ? (
         <Message variant='error'>{error?.data.message}</Message>
       ) : (

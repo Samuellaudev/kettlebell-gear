@@ -55,65 +55,73 @@ const ProfileScreen = () => {
       <div className="mt-10 w-full max-w-sm mx-auto overflow-hidden bg-white rounded-lg shadow-md">
         <div className="px-6 py-4">
           <h3 className="mt-3 text-xl font-medium text-center text-gray-600">User Profile</h3>
-          <form onSubmit={submitHandler}>
-            <div className="w-full mt-4">
-              <label htmlFor="name" className="block text-sm font-medium text-gray-700">Name</label>
-              <FormInput
-                id="name"
-                type="text"
-                placeholder="Enter name"
-                value={name}
-                onChange={(e) => setName(e.target.value)}
-                ariaLabel="Name"
-              />
-            </div>
+          { isLoading ? (
+            <Loader customClass='p-10 my-4' />
+          ) : error ? (
+            <Message variant='error'>
+              { error?.data?.message || error.error }
+            </Message>
+          ) : (
+            <form onSubmit={ submitHandler }>
+              <div className="w-full mt-4">
+                <label htmlFor="name" className="block text-sm font-medium text-gray-700">Name</label>
+                <FormInput
+                  id="name"
+                  type="text"
+                  placeholder="Enter name"
+                  value={ name }
+                  onChange={ (e) => setName(e.target.value) }
+                  ariaLabel="Name"
+                />
+              </div>
 
-            <div className="w-full mt-4">
-              <label htmlFor="email" className="block text-sm font-medium text-gray-700">Email Address</label>
-              <FormInput
-                id="email"
-                type="email"
-                placeholder="Enter email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                ariaLabel="Email Address"
-              />
-            </div>
+              <div className="w-full mt-4">
+                <label htmlFor="email" className="block text-sm font-medium text-gray-700">Email Address</label>
+                <FormInput
+                  id="email"
+                  type="email"
+                  placeholder="Enter email"
+                  value={ email }
+                  onChange={ (e) => setEmail(e.target.value) }
+                  ariaLabel="Email Address"
+                />
+              </div>
 
-            <div className="w-full mt-4">
-              <label htmlFor="password" className="block text-sm font-medium text-gray-700">Password</label>
-              <FormInput
-                id="password"
-                type="password"
-                placeholder="Enter password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                ariaLabel="Password"
-              />
-            </div>
+              <div className="w-full mt-4">
+                <label htmlFor="password" className="block text-sm font-medium text-gray-700">Password</label>
+                <FormInput
+                  id="password"
+                  type="password"
+                  placeholder="Enter password"
+                  value={ password }
+                  onChange={ (e) => setPassword(e.target.value) }
+                  ariaLabel="Password"
+                />
+              </div>
 
-            <div className="w-full mt-4">
-              <label htmlFor="confirmPassword" className="block text-sm font-medium text-gray-700">Confirm Password</label>
-              <FormInput
-                id="confirmPassword"
-                type="password"
-                placeholder="Confirm password"
-                value={confirmPassword}
-                onChange={(e) => setConfirmPassword(e.target.value)}
-                ariaLabel="Confirm Password"
-              />
-            </div>
+              <div className="w-full mt-4">
+                <label htmlFor="confirmPassword" className="block text-sm font-medium text-gray-700">Confirm Password</label>
+                <FormInput
+                  id="confirmPassword"
+                  type="password"
+                  placeholder="Confirm password"
+                  value={ confirmPassword }
+                  onChange={ (e) => setConfirmPassword(e.target.value) }
+                  ariaLabel="Confirm Password"
+                />
+              </div>
 
-            <div className="flex items-center justify-center my-4">
-              <button
-                type="submit"
-                disabled={isLoading}
-                className="w-full px-6 py-2 text-sm font-medium tracking-wide text-white capitalize transition-colors duration-300 transform bg-blue-500 rounded-lg hover:bg-blue-400 focus:outline-none focus:ring focus:ring-blue-300 focus:ring-opacity-50"
-              >
+              <div className="flex items-center justify-center my-4">
+                <button
+                  type="submit"
+                  disabled={ isLoading }
+                  className="w-full px-6 py-2 text-sm font-medium tracking-wide text-white capitalize transition-colors duration-300 transform bg-blue-500 rounded-lg hover:bg-blue-400 focus:outline-none focus:ring focus:ring-blue-300 focus:ring-opacity-50"
+                >
                   Update
-              </button>
-            </div>
-          </form>
+                </button>
+              </div>
+            </form>
+          ) }
         </div>
       </div>
 
@@ -121,7 +129,7 @@ const ProfileScreen = () => {
       <div className="mt-10 w-full md:mx-12">
         <h3 className="mt-3 text-xl font-medium text-center text-gray-600">My Orders</h3>
         {isLoading ? (
-          <Loader />
+          <Loader customClass='min-h-screen my-4'/>
         ) : error ? (
           <Message variant='error'>
             {error?.data?.message || error.error}
