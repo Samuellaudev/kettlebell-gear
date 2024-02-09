@@ -27,7 +27,7 @@ const HomeScreen = () => {
     <div className='px-4 md:px-0'>
       <Meta />
       <section className="banner">
-        <div className="mx-auto max-w-screen-xl px-4 py-32 lg:flex lg:h-screen lg:items-center bg-[url('/images/banner_pics.png')] bg-auto bg-right md:bg-contain md:bg-no-repeat">
+        <div className="mx-auto max-w-screen-xl px-4 py-48 my-4 lg:flex w-full lg:items-center bg-[url('/images/banner_pics.png')] bg-cover bg-center md:bg-contain md:bg-no-repeat">
           <div className="mx-auto max-w-xl text-center bg-white/80 px-2 py-4 rounded-md">
             <h1 className="text-3xl font-extrabold sm:text-5xl">
                 Master Your Kettlebell Flow.
