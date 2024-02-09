@@ -23,7 +23,9 @@ const ShopScreen = () => {
 
   useEffect(() => {
     if (!isLoading && data) {
-      setFilteredProducts(data.products || []);
+      const createdDateDescending = productsByTimestamps(data.products).sort((a, b) => b.createdAt - a.createdAt);
+    
+      setFilteredProducts(createdDateDescending || []);
     }
   }, [data, isLoading]);
 

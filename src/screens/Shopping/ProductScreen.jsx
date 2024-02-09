@@ -93,7 +93,7 @@ const ProductScreen = () => {
 
   const renderReviewForm = () => {
     return (
-      <li className="py-4 marker:text-white">
+      <div className="py-4 marker:text-white md:w-2/6">
         <h2 className="text-xl font-bold text-gray-600">Write a Customer Review</h2>
         {loadingProductReview && <Loader />}
         {userInfo ? (
@@ -137,7 +137,7 @@ const ProductScreen = () => {
             Please <Link to="/login" className="text-blue-500">sign in</Link> to write a review
           </Message>
         )}
-      </li>
+      </div>
     );
   };
 
@@ -187,10 +187,10 @@ const ProductScreen = () => {
 
           <div className="flex flex-wrap">
             <div className="w-full p-4 md:p-0 md:w-full">
-              <h2 className="text-3xl pt-16 font-semibold text-gray-600 text-center md:text-left italic">CUSTOMER REVIEWS</h2>
-              <div className='flex flex-col md:flex-row md:space-x-20'>
+              <h2 className="text-3xl pt-16 pb-4 font-semibold text-gray-600 text-center md:text-center italic">CUSTOMER REVIEWS</h2>
+              <div className='flex flex-col md:flex-row md:space-x-14'>
                 { renderReviewForm() }
-                <div>
+                <div className='customer-reviews w-4/6'>
                   <div className='pt-4'>
                     { product.reviews.length === 0 && <Message>No Reviews</Message> }
                   </div>
