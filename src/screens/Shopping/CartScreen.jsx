@@ -3,6 +3,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { FaTrash } from 'react-icons/fa';
 import Message from '../../components/Message';
 import ProductImage from '../../components/ProductImage';
+import Breadcrumb from '../../components/Breadcrumb';
 import { addToCart, removeFromCart } from '../../slices/cartSlice';
 
 const CartScreen = () => {
@@ -88,39 +89,48 @@ const CartScreen = () => {
     </div>
   );
 
+  const paths = [
+    { title: 'Home', link: '/' },
+    { title: 'Shop', link: '/shop' },
+    { title: 'Cart', link: '/cart' },
+  ];
+
   return (
-    <div className="container px-4 py-8 mx-auto">
-      <div className="sm:flex sm:items-center sm:justify-between">
-        <h2 className="text-xl font-medium text-gray-800 mb-4">Shopping Cart</h2>
-      </div>
-        <div className='flex flex-col md:flex-row md:justify-between'>
-          { cartItems.length === 0 ? (
-            <div className='w-full flex items-start justify-start space-y-2'>
-              <Message>
-                Your cart is empty.{' '}
-              <Link
-                onClick={() => navigate(-1)}
-                className="text-blue-500"
-              >
-                Go Back
-              </Link>
-              </Message>
-              </div>
-          ) : (
-            <ul className="divide-y divide-gray-200">
-              {cartItems.map((item) => (
-                <CartItem
-                  key={item._id}
-                  item={item}
-                  addToCartHandler={addToCartHandler}
-                  removeFromCartHandler={removeFromCartHandler}
-                />
-              ))}
-            </ul>
-          ) }
-          <CartSummary cartItems={ cartItems } checkoutHandler={ checkoutHandler } />
+    <>
+      <Breadcrumb paths={ paths } />
+      <div className="container px-4 py-8 mx-auto">
+        <div className="sm:flex sm:items-center sm:justify-between">
+          <h2 className="text-xl font-medium text-gray-800 mb-4">Shopping Cart</h2>
         </div>
-    </div>
+          <div className='flex flex-col md:flex-row md:justify-between'>
+            { cartItems.length === 0 ? (
+              <div className='w-full flex items-start justify-start space-y-2'>
+                <Message>
+                  Your cart is empty.{' '}
+                <Link
+                  onClick={() => navigate(-1)}
+                  className="text-blue-500"
+                >
+                  Go Back
+                </Link>
+                </Message>
+                </div>
+            ) : (
+              <ul className="divide-y divide-gray-200">
+                {cartItems.map((item) => (
+                  <CartItem
+                    key={item._id}
+                    item={item}
+                    addToCartHandler={addToCartHandler}
+                    removeFromCartHandler={removeFromCartHandler}
+                  />
+                ))}
+              </ul>
+            ) }
+            <CartSummary cartItems={ cartItems } checkoutHandler={ checkoutHandler } />
+          </div>
+      </div>
+    </>
   )
 };
 export default CartScreen;

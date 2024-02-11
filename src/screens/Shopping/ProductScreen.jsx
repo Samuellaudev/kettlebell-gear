@@ -11,6 +11,7 @@ import Rating from '../../components/Rating';
 import Loader from '../../components/Loader';
 import Message from '../../components/Message';
 import Meta from '../../components/Meta';
+import Breadcrumb from '../../components/Breadcrumb';
 import { toast } from 'react-toastify';
 
 const ProductScreen = () => {
@@ -141,8 +142,15 @@ const ProductScreen = () => {
     );
   };
 
+  const paths = [
+    { title: 'Home', link: '/' },
+    { title: 'Shop', link: '/shop' },
+    { title: 'Product', link: `/product/${productId}` },
+  ];
+
   return (
     <>
+      <Breadcrumb paths={ paths } />
       <Link
         onClick={() => navigate(-1)}
         className="inline-block py-2 px-4 mt-6 mx-4 md:mx-0 border rounded hover:bg-black hover:text-white transition duration-200"
