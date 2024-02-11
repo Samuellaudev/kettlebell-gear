@@ -12,6 +12,7 @@ import Loader from '../../components/Loader';
 import Message from '../../components/Message';
 import Meta from '../../components/Meta';
 import Breadcrumb from '../../components/Breadcrumb';
+import BackToTop from '../../components/Utility/BackToTop';
 import { toast } from 'react-toastify';
 
 const ProductScreen = () => {
@@ -151,6 +152,7 @@ const ProductScreen = () => {
   return (
     <>
       <Breadcrumb paths={ paths } />
+      <BackToTop />
       <Link
         onClick={() => navigate(-1)}
         className="inline-block py-2 px-4 mt-6 mx-4 md:mx-0 border rounded hover:bg-black hover:text-white transition duration-200"
