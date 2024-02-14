@@ -1,7 +1,11 @@
 import { ImSpinner11 } from "react-icons/im";
 import { IconContext } from "react-icons";
 
-const Loader = ({customClass}) => {
+interface LoaderProps {
+  customClass: string;
+}
+
+const Loader = ({customClass}: LoaderProps) => {
   const options = {
     color: "gray",
     size: '2rem',

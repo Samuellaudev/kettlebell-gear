@@ -1,4 +1,6 @@
-export const modifiedImageName = (id, imageName) => {
+import { Product } from '../shared.types'
+
+export const modifiedImageName = (id: String, imageName: string) => {
   return `${id}&img=${imageName}`;
 };
 
@@ -10,7 +12,7 @@ export const originalImageName = (imageName = '') => {
   return imageName;
 };
 
-export const productsByTimestamps = (filteredProducts) => {
+export const productsByTimestamps = (filteredProducts: Product[]) => {
   const result = filteredProducts.map(item => {
     return {
       ...item,

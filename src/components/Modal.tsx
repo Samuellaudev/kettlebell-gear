@@ -1,6 +1,20 @@
 import { Dialog, Transition } from '@headlessui/react';
 import { Fragment } from 'react';
 
+interface ModalProps {
+  isOpen: boolean,
+  openModal: () => void;
+  closeModal: () => void;
+  dialog: {
+    title: string;
+    body?: string;
+    yesButtonText: string;
+    noButtonText: string;
+    handleYesClick: () => void;
+    handleNoClick: () => void;
+  };
+}
+
 const Modal = ({
   isOpen,
   openModal,
@@ -9,16 +23,18 @@ const Modal = ({
     title: '',
     body: '',
     yesButtonText: '',
-    noButtonText: ''
+    noButtonText: '',
+    handleYesClick: () => {},
+    handleNoClick: () => {}
   },
-  handleYesClick,
-  handleNoClick
-}) => {
+}: ModalProps) => {
   const {
     title,
     body,
     yesButtonText,
-    noButtonText
+    noButtonText,
+    handleYesClick,
+    handleNoClick
   } = dialog;
 
   return (

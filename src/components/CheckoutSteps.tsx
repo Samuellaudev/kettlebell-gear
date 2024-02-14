@@ -1,7 +1,13 @@
-import React from 'react';
 import { NavLink } from 'react-router-dom';
 
-const CheckoutSteps = ({ step1, step2, step3, step4 }) => {
+interface CheckoutStepsProps {
+  step1: boolean;
+  step2?: boolean;
+  step3?: boolean;
+  step4?: boolean;
+}
+
+const CheckoutSteps = ({ step1, step2, step3, step4 }: CheckoutStepsProps) => {
   return (
     <nav className="flex justify-center mb-4">
       <NavLink

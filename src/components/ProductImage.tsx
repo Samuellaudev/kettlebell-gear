@@ -1,7 +1,17 @@
 import { useGetProductImageQuery } from '../slices/productsApiSlice';
-import Loader from '../components/Loader';
+import Loader from './Loader';
 
-const ProductImage = ({ product, customClass }) => {
+interface ProductImageProps {
+  product: {
+    name: string;
+    image: {
+      name: string;
+    },
+  };
+  customClass?: string;
+}
+
+const ProductImage = ({ product, customClass }: ProductImageProps) => {
   const imageName = product?.image?.name || '';
   const { data: imgData, isLoading: imgLoading, error: imgError } = useGetProductImageQuery(imageName);
 

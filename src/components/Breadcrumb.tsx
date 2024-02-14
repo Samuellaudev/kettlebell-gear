@@ -1,6 +1,15 @@
 import { Link } from 'react-router-dom';
 
-const Breadcrumb = ({ paths }) => {
+interface Path {
+  title: string;
+  link: string;
+}
+
+interface BreadcrumbProps {
+  paths: Path[];
+}
+
+const Breadcrumb = ({ paths }: BreadcrumbProps) => {
   return (
     <nav aria-label="breadcrumb">
       <ol className="breadcrumb flex space-x-2 mt-10 pl-4">

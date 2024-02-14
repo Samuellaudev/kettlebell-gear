@@ -7,6 +7,8 @@ import Loader from '../Loader';
 import styles from './carousel.module.css'
 import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
+import { SerializedError } from '@reduxjs/toolkit';
+import { FetchBaseQueryError } from '@reduxjs/toolkit/query';
 
 const ProductCarousel = () => {
   const { data: products, isLoading, error } = useGetTopProductsQuery();
@@ -22,8 +24,17 @@ const ProductCarousel = () => {
     cssEase: "ease-in-out",
     arrows: false,
     dotsClass: 'slick-dots bottom-[-25px]',
-    appendDots: dots => <ul className='text-white'>{dots}</ul>
   };
+
+  const errorMessage = (error: FetchBaseQueryError | SerializedError) => {
+    if ('status' in error) {
+      const errMsg = 'error' in error ? error.error : JSON.stringify(error.data)
+
+      return <Message variant='error'>{errMsg}</Message>
+    } else {
+      return <Message variant='error'>{error.message}</Message>
+    }
+  }
 
   return (
     <div className='mt-28'>
@@ -45,11 +56,11 @@ const ProductCarousel = () => {
         { isLoading ? (
           <Loader customClass='min-h-full' />
         ) : error ? (
-          <Message variant='error'>{ error?.data?.message || error.error }</Message>
+          errorMessage(error)
         ) : (
           <div className='w-full md:w-1/2 mx-auto -mb-1.5'>
             <Slider { ...settings }>
-              {products.map((product) => (
+              {products?.map((product) => (
                 <div key={product._id} className='carousel-item relative'>
                   <Link to={ `/product/${ product._id }` }>
                     <ProductImage product={ product } customClass='w-full mx-auto' />

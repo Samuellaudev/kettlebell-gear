@@ -1,6 +1,18 @@
 import { Link } from 'react-router-dom'
 
-const Paginate = ({ pages, page, isAdmin = false, keyword = '' }) => {
+interface PaginateProps {
+  pages: number;
+  page: number;
+  isAdmin: boolean;
+  keyword: string;
+}
+
+const Paginate = ({
+  pages,
+  page,
+  isAdmin = false,
+  keyword = ''
+}: PaginateProps) => {
   return (
     pages > 1 && (
       <div className="mt-6">

@@ -1,7 +1,12 @@
-const Message = ({ variant, children }) => {
-  // Define the background and text color based on the variant
+interface MessageProps {
+  variant: 'success' | 'warning' | 'error' ;
+  children: React.ReactNode;
+}
+
+const Message = ({ variant, children }: MessageProps) => {
   let bgColor;
   let textColor;
+
   switch (variant) {
     case 'success':
       bgColor = 'bg-green-100';
@@ -25,10 +30,6 @@ const Message = ({ variant, children }) => {
       {children}
     </div>
   );
-};
-
-Message.defaultProps = {
-  variant: 'info',
 };
 
 export default Message;

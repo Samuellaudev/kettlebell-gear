@@ -1,14 +1,23 @@
 import { Menu, Transition } from '@headlessui/react';
 import { Fragment } from 'react';
 
-export default function Dropdown({
+interface DropdownProps {
+  title?: string;
+  handleManualClick: () => void;
+  handlePriceAscClick: () => void;
+  handlePriceDescClick: () => void;
+  handleCreateAscClick: () => void;
+  handleCreateDescClick: () => void;
+}
+
+const Dropdown = ({
   title,
   handleManualClick,
   handlePriceAscClick,
   handlePriceDescClick,
   handleCreateAscClick,
   handleCreateDescClick
-}) {
+}: DropdownProps) => {
   const menuItems = [
     { label: 'Manual', onClick: handleManualClick },
     { label: 'Price ascending', onClick: handlePriceAscClick },
@@ -57,3 +66,5 @@ export default function Dropdown({
     </div>
   );
 }
+
+export default Dropdown;

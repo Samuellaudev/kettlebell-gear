@@ -1,4 +1,8 @@
-const FormContainer = ({ children }) => {
+interface FormContainerProps {
+  children: React.ReactElement;
+}
+
+const FormContainer = ({ children }: FormContainerProps) => {
   return (
     <div className='relative container mx-auto my-14'>
       <div className="flex justify-center">

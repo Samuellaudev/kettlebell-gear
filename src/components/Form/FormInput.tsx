@@ -1,3 +1,13 @@
+interface FormInputProps {
+  id: string;
+  type: string;
+  placeholder: string;
+  value: string;
+  onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  ariaLabel: string;
+  required: boolean;
+}
+
 const FormInput = ({
   id,
   type,
@@ -6,7 +16,7 @@ const FormInput = ({
   onChange,
   ariaLabel,
   required,
-}) => {
+}: FormInputProps) => {
   return (
     <div className="w-full mt-4">
       <input

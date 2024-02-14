@@ -1,9 +1,14 @@
+import { Product as ProductType } from '../../shared.types'
 import { Link } from 'react-router-dom';
 import Rating from '../Rating';
 import styles from './product.module.css';
 import ProductImage from '../ProductImage';
 
-const Product = ({ product }) => {
+interface ProductProp {
+  product: ProductType;
+}
+
+const Product = ({ product }: ProductProp) => {
   const checkCountInStock = () => {
     return (
       product.countInStock > 0
