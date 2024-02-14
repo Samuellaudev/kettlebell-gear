@@ -1,40 +1,41 @@
+import { Product } from '../../shared.types'
 import { useState, useEffect, useRef } from 'react';
 import { useLogoutMutation } from '../../slices/usersApiSlice';
 import { logout } from '../../slices/authSlice';
 import { useNavigate } from 'react-router-dom';
-import { useSelector, useDispatch } from 'react-redux';
+import { useAppSelector, useAppDispatch } from '../../hooks';
 import { NavLink } from "react-router-dom";
 import { resetCart } from '../../slices/cartSlice';
 import SearchBox from '../SearchBox';
 
 const Navbar = () => {
-  const { cartItems } = useSelector((state) => state.cart);
-  const { userInfo } = useSelector((state) => state.auth);
+  const { cartItems } = useAppSelector((state) => state.cart);
+  const { userInfo } = useAppSelector((state) => state.auth);
 
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const toggleMobileMenu = () => setIsMobileMenuOpen(!isMobileMenuOpen);
 
   // Menu
   const [isDropdownOpen, setIsDropdownOpen] = useState(true);
-  const dropdownRef = useRef(null);
+  const dropdownRef = useRef<HTMLDivElement>(null);
 
   const toggleDropdown = () => setIsDropdownOpen(!isDropdownOpen);
   const closeDropdown = () => setIsDropdownOpen(false);
 
   // Admin menu
   const [isAdminDropdownOpen, setIsAdminDropdownOpen] = useState(true);
-  const adminDropdownRef = useRef(null);
+  const adminDropdownRef = useRef<HTMLDivElement>(null);
 
   const toggleAdminDropdown = () => setIsAdminDropdownOpen(!isAdminDropdownOpen);
   const closeAdminDropdown = () => setIsAdminDropdownOpen(false);
 
   useEffect(() => {
-    const handleOutsideClick = (e) => {
-      if (dropdownRef.current && !dropdownRef.current.contains(e.target)) {
+    const handleOutsideClick = (e: MouseEvent) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(e.target as HTMLElement)) {
         setIsDropdownOpen(false);
       }
 
-      if (adminDropdownRef.current && !adminDropdownRef.current.contains(e.target)) {
+      if (adminDropdownRef.current && !adminDropdownRef.current.contains(e.target as HTMLElement)) {
         setIsAdminDropdownOpen(false);
       }
     };
@@ -46,7 +47,7 @@ const Navbar = () => {
     };
   }, []);  
 
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
   const navigate = useNavigate();
 
   const [logoutApiCall] = useLogoutMutation();
@@ -223,7 +224,9 @@ const Navbar = () => {
             <div>
               { cartItems.length > 0 && (
                 <span className="inline-block py-1 px-2 bg-green-600 text-white text-xs font-semibold rounded-full">
-                  { cartItems.reduce((a, c) => a + c.qty, 0) }
+                  { cartItems.reduce((totalQty: number, currentItem: Product) => { 
+                    return totalQty + (currentItem.qty || 0);
+                  }, 0)}
                 </span>)
               }
             </div>
