@@ -1,20 +1,20 @@
 // Products
 export interface Product {
   _id: string;
-  user: string;
   name: string;
-  image: ProductImage;
-  brand: string;
-  category: string;
-  description: string;
-  rating: number;
-  numReviews: number;
-  price: number;
   qty?: number;
-  countInStock: number;
-  reviews: Review[];
-  createdAt: string;
-  updatedAt: string;
+  image: ProductImage;
+  price: number;
+  user?: string;
+  brand?: string;
+  category?: string;
+  description?: string;
+  rating?: number;
+  numReviews?: number;
+  countInStock?: number;
+  reviews?: Review[];
+  createdAt?: string;
+  updatedAt?: string;
 }
 
 export interface Review {
@@ -55,12 +55,12 @@ export interface ShippingAddress {
 
 // Orders
 export interface OrderItem {
+  _id: string;
   name: string;
   qty: number;
-  image: string;
+  image: ProductImage;
   price: number;
   product: Product['_id']
-  _id: string;
 }
 export interface Order {
   shippingAddress: {
@@ -70,10 +70,7 @@ export interface Order {
     country: string;
   },
   _id: string;
-  user: {
-    name: UserInfo['name'];
-    _id: UserInfo['_id']
-  }
+  user: UserInfo;
   orderItems: OrderItem[];
   paymentMethod: string;
   itemsPrice: number;

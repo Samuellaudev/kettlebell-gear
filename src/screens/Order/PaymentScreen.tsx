@@ -1,13 +1,14 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useDispatch, useSelector } from 'react-redux';
+import { useAppSelector, useAppDispatch } from '../../hooks'
+
 import { savePaymentMethod } from '../../slices/cartSlice';
 import FormContainer from '../../components/FormContainer';
 import CheckoutSteps from '../../components/CheckoutSteps';
 
 const PaymentScreen = () => {
   const navigate = useNavigate();
-  const cart = useSelector((state) => state.cart);
+  const cart = useAppSelector((state) => state.cart);
   const { shippingAddress } = cart;
   
   useEffect(() => {
@@ -18,9 +19,9 @@ const PaymentScreen = () => {
   
   const [paymentMethod, setPaymentMethod] = useState('PayPal');
 
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
 
-  const submitHandler = (e) => {
+  const submitHandler = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
     dispatch(savePaymentMethod(paymentMethod));

@@ -1,8 +1,11 @@
 import { useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { useSelector, useDispatch } from 'react-redux';
+import { useAppSelector, useAppDispatch } from '../../hooks'
 import { useCreateOrderMutation } from '../../slices/ordersApiSlice';
 import { clearCartItems } from '../../slices/cartSlice';
+import { errorMessage, isFetchBaseQueryError, isErrorWithMessage } from '../../utils/helpers';
+import { Product, OrderItem} from '../../shared.types'
+
 import FormContainer from '../../components/FormContainer';
 import CheckoutSteps from '../../components/CheckoutSteps';
 import Message from '../../components/Message';
@@ -13,7 +16,7 @@ import { toast } from 'react-toastify';
 const PlaceOrderScreen = () => {
   const navigate = useNavigate();
 
-  const cart = useSelector((state) => state.cart);
+  const cart = useAppSelector((state) => state.cart);
 
   const [createOrder, { isLoading, error }] = useCreateOrderMutation();
 
@@ -25,7 +28,7 @@ const PlaceOrderScreen = () => {
     }
   }, [cart.paymentMethod, cart.shippingAddress.address, navigate]);
 
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
   const placeOrderHandler = async () => {
     try {
       const res = await createOrder({
@@ -37,11 +40,18 @@ const PlaceOrderScreen = () => {
         taxPrice: cart.taxPrice,
         totalPrice: cart.totalPrice,
       }).unwrap();
-      console.log('res', res);
+
       dispatch(clearCartItems());
       navigate(`/order/${res._id}`);
     } catch (err) {
-      toast.error(err);
+      if (isFetchBaseQueryError(err)) {
+        // Access all properties of `FetchBaseQueryError` here
+        const errMsg = 'error' in err ? err.error : JSON.stringify(err.data)
+        toast.error(errMsg)
+      } else if (isErrorWithMessage(err)) {
+        // Access a string 'message' property here
+        toast.error(err.message)
+      }
     }
   };  
 
@@ -70,20 +80,20 @@ const PlaceOrderScreen = () => {
             {cart.cartItems.length === 0 ? (
               <Message>Your cart is empty</Message>
             ) : (
-              <ul>
-                {cart.cartItems.map((item, index) => (
-                  <li key={index} className="bg-white mb-4">
-                    <div className="flex items-center">
-                      <ProductImage product={item } alt={item.name} customClass="w-16 rounded-md mr-4" />
-                      <div>
-                        <Link to={`/product/${item.product}`} className="text-blue-500 font-semibold">{item.name}</Link>
-                        <p className='font-medium text-gray-600'>
-                          { item.qty } x ${ item.price } = ${ (item.qty * (item.price * 100)) / 100 }
-                        </p>
+                <ul>
+                  {cart.cartItems.map((item, index) => (
+                    <li key={index} className="bg-white mb-4">
+                      <div className="flex items-center">
+                        <ProductImage product={item } customClass="w-16 rounded-md mr-4" />
+                        <div>
+                          <Link to={`/product/${item._id}`} className="text-blue-500 font-semibold">{item.name}</Link>
+                          <p className='font-medium text-gray-600'>
+                            { item.qty } x ${ item.price } = ${ (item.qty! * (item.price * 100)) / 100 }
+                          </p>
+                        </div>
                       </div>
-                    </div>
-                  </li>
-                ))}
+                    </li>
+                  ))}
               </ul>
             )}
           </div>
@@ -108,21 +118,21 @@ const PlaceOrderScreen = () => {
               <span>Total</span>
               <span>${cart.totalPrice}</span>
             </div>
-            <div>
-              {error && (
-                <Message variant='danger'>{error?.data.message}</Message>
-              )}
-            </div>
             <div className="my-4">
               <button
                 type='button'
                 className='bg-blue-500 text-white py-2 px-4 w-full rounded-md cursor-pointer disabled:opacity-50'
-                disabled={cart.cartItems === 0}
+                disabled={cart.cartItems.length === 0}
                 onClick={placeOrderHandler}
               >
                 Place Order
               </button>
-              {isLoading && <Loader customClass='p-4 my-4'/>}
+              { isLoading ? (
+                <Loader customClass='p-4 my-4'/>
+              ) : error ? (
+                errorMessage(error)
+              ) : null
+              }
             </div>
           </div>
         </div>

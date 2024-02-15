@@ -3,12 +3,6 @@ import { Product as ProductType } from '../shared.types'
 import Loader from './Loader';
 
 interface ProductImageProps {
-  // product: {
-  //   name: string;
-  //   image: {
-  //     name: string;
-  //   },
-  // };
   product: ProductType;
   customClass?: string;
 }

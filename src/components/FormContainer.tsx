@@ -1,5 +1,5 @@
 interface FormContainerProps {
-  children: React.ReactElement;
+  children: JSX.Element | JSX.Element[];
 }
 
 const FormContainer = ({ children }: FormContainerProps) => {
