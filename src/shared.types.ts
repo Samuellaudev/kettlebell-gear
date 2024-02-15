@@ -34,7 +34,6 @@ export interface ProductImage {
 }
 
 // Users
-
 export interface UserInfo {
   _id: string;
   name: string;
@@ -42,22 +41,44 @@ export interface UserInfo {
   isAdmin: boolean;
 }
 
-export interface LoginRequest {
-  email: string;
-  password: string;
-}
-export type LoginResponse = UserInfo;
+// Carts
+export type CartItem = Product;
 
-export interface RegisterRequest {
-  name: string;
-  email: string;
-  password: string;
+export interface ShippingAddress {
+  address: string;
+  city: string;
+  postalCode: string;
+  country: string;
 }
-export type RegisterResponse = UserInfo;
 
-export interface UpdateProfileRequest {
+// Orders
+export interface OrderItem {
   name: string;
-  email: string;
-  password: string;
+  qty: number;
+  image: string;
+  price: number;
+  product: Product['_id']
+  _id: string;
 }
-export type UpdateProfileResponse = UserInfo;
+export interface Order {
+  shippingAddress: {
+    address: string;
+    city: string;
+    postalCode: string;
+    country: string;
+  },
+  _id: string;
+  user: UserInfo['_id'];
+  orderItems: OrderItem[];
+  paymentMethod: string;
+  itemsPrice: number;
+  taxPrice: number;
+  shippingPrice: number;
+  totalPrice: number;
+  isPaid: boolean;
+  isDelivered: boolean;
+  createdAt: string;
+  updatedAt: string;
+  paidAt: string;
+  deliveredAt: string;
+}

@@ -1,9 +1,9 @@
 import { Helmet } from 'react-helmet-async';
 
 interface MetaProps {
-  title: string;
-  description: string;
-  keywords: string;
+  title?: string;
+  description?: string;
+  keywords?: string;
 }
 
 const Meta = ({

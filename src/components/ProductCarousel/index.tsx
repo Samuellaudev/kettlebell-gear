@@ -2,13 +2,11 @@ import { Link } from 'react-router-dom';
 import Slider from 'react-slick';
 import { useGetTopProductsQuery } from '../../slices/productsApiSlice';
 import ProductImage from '../ProductImage';
-import Message from '../Message';
 import Loader from '../Loader';
 import styles from './carousel.module.css'
 import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
-import { SerializedError } from '@reduxjs/toolkit';
-import { FetchBaseQueryError } from '@reduxjs/toolkit/query';
+import { errorMessage } from '../../utils/helpers'
 
 const ProductCarousel = () => {
   const { data: products, isLoading, error } = useGetTopProductsQuery();
@@ -25,16 +23,6 @@ const ProductCarousel = () => {
     arrows: false,
     dotsClass: 'slick-dots bottom-[-25px]',
   };
-
-  const errorMessage = (error: FetchBaseQueryError | SerializedError) => {
-    if ('status' in error) {
-      const errMsg = 'error' in error ? error.error : JSON.stringify(error.data)
-
-      return <Message variant='error'>{errMsg}</Message>
-    } else {
-      return <Message variant='error'>{error.message}</Message>
-    }
-  }
 
   return (
     <div className='mt-28'>

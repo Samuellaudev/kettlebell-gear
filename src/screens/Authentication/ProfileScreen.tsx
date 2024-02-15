@@ -1,10 +1,11 @@
 import { useEffect, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useAppSelector, useAppDispatch } from '../../hooks'
 import { Link } from 'react-router-dom';
 import { FaTimes } from 'react-icons/fa';
-import Message from '../../components/Message';
+
 import Loader from '../../components/Loader';
 import FormInput from '../../components/Form/FormInput';
+import { errorMessage, isFetchBaseQueryError, isErrorWithMessage  } from '../../utils/helpers';
 
 import { useProfileMutation } from '../../slices/usersApiSlice';
 import { useGetMyOrdersQuery } from '../../slices/ordersApiSlice';
@@ -17,7 +18,7 @@ const ProfileScreen = () => {
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
 
-  const { userInfo } = useSelector((state) => state.auth);
+  const { userInfo } = useAppSelector((state) => state.auth);
 
   const { data: orders, isLoading, error } = useGetMyOrdersQuery();
 
@@ -25,12 +26,14 @@ const ProfileScreen = () => {
     useProfileMutation();
 
   useEffect(() => {
-    setName(userInfo.name);
-    setEmail(userInfo.email);
-  }, [userInfo.email, userInfo.name]);
+    if (userInfo) {
+      setName(userInfo.name);
+      setEmail(userInfo.email);
+    }
+  }, [userInfo?.email, userInfo?.name]);
 
-  const dispatch = useDispatch();
-  const submitHandler = async (e) => {
+  const dispatch = useAppDispatch();
+  const submitHandler = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (password !== confirmPassword) {
       toast.error('Passwords do not match');
@@ -44,7 +47,14 @@ const ProfileScreen = () => {
         dispatch(setCredentials({ ...res }));
         toast.success('Profile updated successfully');
       } catch (err) {
-        toast.error(err?.data?.message || err.error);
+        if (isFetchBaseQueryError(err)) {
+          // Access all properties of `FetchBaseQueryError` here
+          const errMsg = 'error' in err ? err.error : JSON.stringify(err.data)
+          toast.error(errMsg)
+        } else if (isErrorWithMessage(err)) {
+          // Access a string 'message' property here
+          toast.error(err.message)
+        }
       }
     }
   };
@@ -58,9 +68,7 @@ const ProfileScreen = () => {
           { isLoading ? (
             <Loader customClass='p-10 my-4' />
           ) : error ? (
-            <Message variant='error'>
-              { error?.data?.message || error.error }
-            </Message>
+            errorMessage(error)
           ) : (
             <form onSubmit={ submitHandler }>
               <div className="w-full mt-4">
@@ -72,6 +80,7 @@ const ProfileScreen = () => {
                   value={ name }
                   onChange={ (e) => setName(e.target.value) }
                   ariaLabel="Name"
+                  required={false}
                 />
               </div>
 
@@ -84,6 +93,7 @@ const ProfileScreen = () => {
                   value={ email }
                   onChange={ (e) => setEmail(e.target.value) }
                   ariaLabel="Email Address"
+                  required={false}
                 />
               </div>
 
@@ -96,6 +106,7 @@ const ProfileScreen = () => {
                   value={ password }
                   onChange={ (e) => setPassword(e.target.value) }
                   ariaLabel="Password"
+                  required={false}
                 />
               </div>
 
@@ -108,6 +119,7 @@ const ProfileScreen = () => {
                   value={ confirmPassword }
                   onChange={ (e) => setConfirmPassword(e.target.value) }
                   ariaLabel="Confirm Password"
+                  required={false}
                 />
               </div>
 
@@ -131,9 +143,7 @@ const ProfileScreen = () => {
         {isLoading ? (
           <Loader customClass='min-h-screen my-4'/>
         ) : error ? (
-          <Message variant='error'>
-            {error?.data?.message || error.error}
-          </Message>
+          errorMessage(error)
         ) : (
           <div className="flex flex-col mt-6 px-4 md:px-0">
             <div className=" -my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
@@ -162,7 +172,7 @@ const ProfileScreen = () => {
                       </tr>
                     </thead>
                     <tbody className="bg-white divide-y divide-gray-200">
-                      {orders.map((order) => (
+                      {orders?.map((order) => (
                         <tr key={order._id}>
                           <td className="px-4 py-4 text-sm text-gray-500 whitespace-nowrap">{order._id}</td>
                           <td className="px-4 py-4 text-sm text-gray-500 whitespace-nowrap">{order.createdAt.substring(0, 10)}</td>
