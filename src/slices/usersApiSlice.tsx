@@ -1,29 +1,40 @@
 import { apiSlice } from './apiSlice';
 import { USERS_URL } from '../utils/constants';
+import {
+  LoginRequest,
+  LoginResponse,
+  RegisterRequest,
+  RegisterResponse,
+  UpdateProfileRequest,
+  UpdateProfileResponse,
+  UsersResponse,
+  UpdateUserRequest,
+  UpdateUserResponse
+} from './usersApiSlice.types';
 
 export const usersApiSlice = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
-    login: builder.mutation({
+    login: builder.mutation<LoginResponse, LoginRequest>({
       query: (data) => ({
         url: `${USERS_URL}/login`,
         method: 'POST',
         body: data,
       }),
     }),
-    logout: builder.mutation({
+    logout: builder.mutation<void, void>({
       query: () => ({
         url: `${USERS_URL}/logout`,
         method: 'POST',
       }),
     }),
-    register: builder.mutation({
+    register: builder.mutation<RegisterResponse, RegisterRequest>({
       query: (data) => ({
         url: `${USERS_URL}`,
         method: 'POST',
         body: data,
       }),
     }),
-    profile: builder.mutation({
+    profile: builder.mutation<UpdateProfileResponse, UpdateProfileRequest>({
       query: (data) => ({
         url: `${USERS_URL}/profile`,
         method: 'PUT',
@@ -31,14 +42,14 @@ export const usersApiSlice = apiSlice.injectEndpoints({
       }),
     }),
     // Admin operations
-    getUsers: builder.query({
+    getUsers: builder.query<UsersResponse, void>({
       query: () => ({
         url: USERS_URL,
       }),
       providesTags: ['User'],
       keepUnusedDataFor: 5,
     }),
-    deleteUser: builder.mutation({
+    deleteUser: builder.mutation<void, string>({
       query: (userId) => ({
         url: `${USERS_URL}/${userId}`,
         method: 'DELETE',
@@ -50,7 +61,7 @@ export const usersApiSlice = apiSlice.injectEndpoints({
       }),
       keepUnusedDataFor: 5,
     }),
-    updateUser: builder.mutation({
+    updateUser: builder.mutation<UpdateUserResponse, UpdateUserRequest>({
       query: (data) => ({
         url: `${USERS_URL}/${data.userId}`,
         method: 'PUT',
@@ -68,6 +79,6 @@ export const {
   useProfileMutation,
   useGetUsersQuery,
   useDeleteUserMutation,
-  useUpdateUserMutation,
   useGetUserDetailsQuery,
+  useUpdateUserMutation
 } = usersApiSlice;

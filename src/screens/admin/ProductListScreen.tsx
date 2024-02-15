@@ -1,27 +1,38 @@
 import { useState } from 'react'
 import { Link } from 'react-router-dom';
 import { useParams } from 'react-router-dom';
-import { FaEdit, FaPlus, FaTrash } from 'react-icons/fa';
-import Message from '../../components/Message';
-import Loader from '../../components/Loader';
-import Paginate from '../../components/Paginate';
-import Modal from '../../components/Modal';
 import {
   useGetProductsQuery,
   useCreateProductMutation,
   useDeleteProductMutation
 } from '../../slices/productsApiSlice';
+import { errorMessage, isFetchBaseQueryError, isErrorWithMessage } from '../../utils/helpers';
+import { Product as ProductType } from '../../shared.types'
+import { initialDialogValue } from '../../utils/constants'
+
+import { FaEdit, FaPlus, FaTrash } from 'react-icons/fa';
+import Loader from '../../components/Loader';
+import Paginate from '../../components/Paginate';
+import Modal from '../../components/Modal';
 import { toast } from 'react-toastify';
 
 const ProductListScreen = () => {
-  const { pageNumber } = useParams();
+  const { pageNumber = '', keyword = '' } = useParams<{ pageNumber: string; keyword: string }>();
 
   const { data, isLoading, error, refetch } = useGetProductsQuery({
     pageNumber,
+    keyword
   });
 
   const [isOpen, setIsOpen] = useState(false);
-  const [dialog, setDialog] = useState({})
+  const [dialog, setDialog] = useState<{ 
+    title: string; 
+    body?: string; 
+    yesButtonText: string; 
+    noButtonText: string; 
+    handleYesClick: () => void; 
+    handleNoClick: () => void; 
+  }>(initialDialogValue);
 
   const openModal = () => setIsOpen(true);
   const closeModal = () => setIsOpen(false);
@@ -48,11 +59,18 @@ const ProductListScreen = () => {
         closeModal()
         toast.success('Product created successfully')
       } catch (err) {
-        toast.error(err?.data?.message || err.error);
+        if (isFetchBaseQueryError(err)) {
+          // Access all properties of `FetchBaseQueryError` here
+          const errMsg = 'error' in err ? err.error : JSON.stringify(err.data)
+          toast.error(errMsg)
+        } else if (isErrorWithMessage(err)) {
+          // Access a string 'message' property here
+          toast.error(err.message)
+        }
       }
   };
 
-  const handleDeleteClick = (product) => {
+  const handleDeleteClick = (product: ProductType) => {
     setDialog({
       title: `Are you sure you want do delete '${product.name}'?`,
       handleYesClick: () => deleteHandler(product),
@@ -66,7 +84,7 @@ const ProductListScreen = () => {
   const [deleteProduct, { isLoading: loadingDelete }] =
     useDeleteProductMutation();
   
-    const deleteHandler = async (product) => {
+    const deleteHandler = async (product: ProductType) => {
         try {
           await deleteProduct(product._id);
           refetch();
@@ -74,19 +92,24 @@ const ProductListScreen = () => {
           closeModal()
           toast.success('Product deleted successfully')
         } catch (err) {
-          toast.error(err?.data?.message || err.error);
+          if (isFetchBaseQueryError(err)) {
+            // Access all properties of `FetchBaseQueryError` here
+            const errMsg = 'error' in err ? err.error : JSON.stringify(err.data)
+            toast.error(errMsg)
+          } else if (isErrorWithMessage(err)) {
+            // Access a string 'message' property here
+            toast.error(err.message)
+          }
         }
     };
 
   return (
     <>
       <Modal
-        isOpen={isOpen}
+        isOpen={ isOpen }
         openModal={openModal}
-        closeModal={closeModal}
+        closeModal={ closeModal }
         dialog={ dialog }
-        handleYesClick={dialog.handleYesClick}
-        handleNoClick={dialog.handleNoClick}
       />
       <div className="container px-4 py-8 mx-auto">
         <div className="sm:flex sm:items-center sm:justify-between">
@@ -104,7 +127,7 @@ const ProductListScreen = () => {
         {isLoading || loadingCreate || loadingDelete ? (
           <Loader customClass='min-h-screen my-4'/>
         ) : error ? (
-          <Message variant='error'>{error?.data.message}</Message>
+          errorMessage(error)
         ) : (
         <>
           <div className="flex flex-col mt-6 px-4 md:px-0">
@@ -135,7 +158,7 @@ const ProductListScreen = () => {
                       </tr>
                     </thead>
                     <tbody className="bg-white divide-y divide-gray-200">
-                      {data.products.map((product) => (
+                      {data?.products.map((product) => (
                         <tr key={product._id}>
                           <td className="px-4 py-4 text-sm text-gray-500 whitespace-nowrap">{product._id}</td>
                           <td className="px-4 py-4 text-sm text-gray-500 whitespace-nowrap">{product.name}</td>
@@ -161,7 +184,7 @@ const ProductListScreen = () => {
               </div>
             </div>
           </div>
-          <Paginate pages={ data.pages } page={ data.page } isAdmin={ true } />
+          {data && <Paginate pages={ data?.pages } page={ data?.page } isAdmin={ true } />}
         </>
         )}
       </div>

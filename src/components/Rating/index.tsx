@@ -3,7 +3,7 @@ import styles from './rating.module.css'
 
 interface RatingProps {
   value: number;
-  text: string;
+  text?: string;
 }
 
 const Rating = ({ value, text }: RatingProps) => {

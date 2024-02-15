@@ -1,9 +1,9 @@
 import { Link } from 'react-router-dom';
 import { FaTimes } from 'react-icons/fa';
-import Message from '../../components/Message';
 import Loader from '../../components/Loader';
 import Paginate from '../../components/Paginate';
 import { useGetOrdersQuery } from '../../slices/ordersApiSlice';
+import { errorMessage } from '../../utils/helpers'
 
 const OrderListScreen = () => {
   const { data: orders, isLoading, error } = useGetOrdersQuery();
@@ -17,7 +17,7 @@ const OrderListScreen = () => {
       {isLoading ? (
         <Loader customClass='min-h-screen my-4' />
       ) : error ? (
-        <Message variant='error'>{error?.data.message}</Message>
+        errorMessage(error)
       ) : (
       <>
         <div className="flex flex-col mt-6 px-4 md:px-0">
@@ -50,7 +50,7 @@ const OrderListScreen = () => {
                     </tr>
                   </thead>
                   <tbody className="bg-white divide-y divide-gray-200">
-                    {orders.map((order) => (
+                    {orders?.map((order) => (
                       <tr key={order._id}>
                         <td className="px-4 py-4 text-sm text-gray-500 whitespace-nowrap">{order._id}</td>
                         <td className="px-4 py-4 text-sm text-gray-500 whitespace-nowrap">{order.user && order.user.name}</td>
@@ -83,7 +83,7 @@ const OrderListScreen = () => {
             </div>
           </div>
         </div>
-        <Paginate pages={ orders.pages } page={ orders.page } isAdmin={ true } />
+        {/* <Paginate pages={ orders?.pages } page={ orders?.page } isAdmin={ true } /> */}
       </>
       )}
     </div>

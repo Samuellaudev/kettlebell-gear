@@ -11,3 +11,11 @@ export const PAYPAL_URL = '/api/config/paypal';
 export const AWS_S3_GET_URL = '/api/aws-s3';
 
 export const AWS_S3_UPLOAD_URL = '/api/aws-s3/upload';
+
+export const initialDialogValue = {
+  title: '',
+  yesButtonText: 'Yes',
+  noButtonText: 'No',
+  handleYesClick: () => {},
+  handleNoClick: () => {},
+};

@@ -2,7 +2,7 @@ import { ImSpinner11 } from "react-icons/im";
 import { IconContext } from "react-icons";
 
 interface LoaderProps {
-  customClass: string;
+  customClass?: string;
 }
 
 const Loader = ({customClass}: LoaderProps) => {

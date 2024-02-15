@@ -1,6 +1,8 @@
 import { useState } from 'react';
 import { useNavigate, useParams, Link } from 'react-router-dom';
-import { useDispatch, useSelector } from 'react-redux';
+import { useAppSelector, useAppDispatch } from '../../hooks'
+import { errorMessage, isFetchBaseQueryError, isErrorWithMessage } from '../../utils/helpers';
+
 import { addToCart } from '../../slices/cartSlice';
 import {
   useGetProductDetailsQuery,
@@ -16,15 +18,15 @@ import BackToTop from '../../components/Utility/BackToTop';
 import { toast } from 'react-toastify';
 
 const ProductScreen = () => {
-  const { id: productId } = useParams();
+  const { id: productId = '' } = useParams <{ id: string }>();
   const {
     data: product,
     isLoading,
     error,
     refetch
-  } = useGetProductDetailsQuery(productId);
+  } = useGetProductDetailsQuery(productId || '');
 
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
   const navigate = useNavigate();
 
   const [qty, setQty] = useState(1);
@@ -32,16 +34,18 @@ const ProductScreen = () => {
   const [comment, setComment] = useState('');
 
   const addToCartHandler = () => {
+    if (!product) return;
+
     dispatch(addToCart({ ...product, qty }));
     navigate('/cart');
   }
 
-  const { userInfo } = useSelector((state) => state.auth);
+  const { userInfo } = useAppSelector((state) => state.auth);
 
   const [createReview, { isLoading: loadingProductReview }] =
   useCreateReviewMutation();
 
-  const submitHandler = async (e) => {
+  const submitHandler = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
   
     try {
@@ -54,7 +58,14 @@ const ProductScreen = () => {
       refetch();
       toast.success('Review created successfully');
     } catch (err) {
-      toast.error(err?.data?.message || err.error);
+      if (isFetchBaseQueryError(err)) {
+        // Access all properties of `FetchBaseQueryError` here
+        const errMsg = 'error' in err ? err.error : JSON.stringify(err.data)
+        toast.error(errMsg)
+      } else if (isErrorWithMessage(err)) {
+        // Access a string 'message' property here
+        toast.error(err.message)
+      }
     } finally {
       setRating(0)
       setComment('')
@@ -63,12 +74,12 @@ const ProductScreen = () => {
 
   const renderLoaderOrError = () => {
     if (isLoading) return <Loader customClass='my-4 min-h-screen'/>;
-    if (error) return <Message variant='error'>{error?.data.message || error?.error}</Message>;
+    if (error) return errorMessage(error)
     return null;
   };
 
   const renderQtySelect = () => {
-    if (product.countInStock > 0) {
+    if (product?.countInStock && product?.countInStock > 0) {
       return (
         <div className="border-t border-gray-200 py-3">
           <div className="flex items-center justify-space">
@@ -79,7 +90,7 @@ const ProductScreen = () => {
                 value={qty}
                 onChange={(e) => setQty(Number(e.target.value))}
               >
-                {[...Array(product.countInStock).keys()].map((x) => (
+                {[...Array(product?.countInStock).keys()].map((x) => (
                   <option key={x + 1} value={x + 1}>
                     {x + 1}
                   </option>
@@ -106,7 +117,7 @@ const ProductScreen = () => {
                 id="rating"
                 required
                 value={rating}
-                onChange={(e) => setRating(e.target.value)}
+                onChange={(e) => setRating(parseInt(e.target.value, 10))}
                 className="appearance-none mt-1 px-2 bg-white border p-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-500 focus:ring-opacity-50"
               >
                 <option value="">Select...</option>
@@ -119,7 +130,7 @@ const ProductScreen = () => {
               <label htmlFor="comment" className="block text-sm font-semibold">Comment</label>
               <textarea
                 id="comment"
-                rows="3"
+                rows={3}
                 required
                 value={comment}
                 onChange={(e) => setComment(e.target.value)}
@@ -153,40 +164,40 @@ const ProductScreen = () => {
     <>
       <Breadcrumb paths={ paths } />
       <BackToTop />
-      <Link
+      <button
         onClick={() => navigate(-1)}
         className="inline-block py-2 px-4 mt-6 mx-4 md:mx-0 border rounded hover:bg-black hover:text-white transition duration-200"
       >
         Go Back
-      </Link>
+      </button>
       {renderLoaderOrError()}
       {!isLoading && !error && (
         <>
-          <Meta title={product.name} />
+          <Meta title={product?.name} />
           <div className="grid grid-cols-12 gap-2">
             <div className="w-full p-4 md:py-6 md:px-0 col-span-full md:col-span-5">
-              <ProductImage product={ product } customClass='rounded-md'/>
+              {product && <ProductImage product={ product } customClass='rounded-md'/>}
             </div>
             {/* Product Details */}
             <div className="w-full col-span-full md:col-span-4 p-4 text-gray-600">
-              <h3 className="text-3xl font-semibold mb-2">{ product.name }</h3>
-              <Rating value={ product.rating } text={ `${ product.numReviews } reviews` } />
-              <p className="mb-2 text-lg">Price: ${ product.price }</p>
-              <p className="mb-4 text-lg">Description: { product.description }</p>
+              <h3 className="text-3xl font-semibold mb-2">{ product?.name }</h3>
+              <Rating value={ product?.rating ?? 0 } text={ `${ product?.numReviews } reviews` } />
+              <p className="mb-2 text-lg">Price: ${ product?.price }</p>
+              <p className="mb-4 text-lg">Description: { product?.description }</p>
             </div>
             {/* Price */}
             <div className="w-full p-4 md:p-0 col-span-full md:col-span-2 text-gray-600">
               <div className="border rounded-md p-4">
                 <p className="mb-2">
-                  Price: <strong>${ product.price }</strong>
+                  Price: <strong>${ product?.price }</strong>
                 </p>
                 <p className="mb-2">
-                  Status: { product.countInStock > 0 ? 'In Stock' : 'Out Of Stock' }
+                  Status: { product?.countInStock && product?.countInStock > 0 ? 'In Stock' : 'Out Of Stock' }
                 </p>
                 {renderQtySelect()}
                 <button
-                  className={ `w-full py-2 px-4 rounded-md ${ product.countInStock === 0 ? 'bg-gray-400 cursor-not-allowed' : 'bg-blue-500 hover:bg-blue-600 text-white' }` }
-                    disabled={ product.countInStock === 0 }
+                  className={ `w-full py-2 px-4 rounded-md ${ product?.countInStock === 0 ? 'bg-gray-400 cursor-not-allowed' : 'bg-blue-500 hover:bg-blue-600 text-white' }` }
+                    disabled={ product?.countInStock === 0 }
                     onClick={addToCartHandler}
                 >
                   Add To Cart
@@ -202,10 +213,10 @@ const ProductScreen = () => {
                 { renderReviewForm() }
                 <div className='customer-reviews w-4/6'>
                   <div className='pt-4'>
-                    { product.reviews.length === 0 && <Message>No Reviews</Message> }
+                    { product?.reviews.length === 0 && <Message>No Reviews</Message> }
                   </div>
                   <ul className="divide-y divide-gray-200">
-                    {product.reviews.map((review) => (
+                    {product?.reviews.map((review) => (
                       <li key={review._id} className="md:py-7">
                         <div className="font-semibold text-gray-600">{review.name}</div>
                         <Rating value={review.rating} />

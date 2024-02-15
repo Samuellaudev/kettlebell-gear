@@ -13,8 +13,8 @@ export interface Product {
   qty?: number;
   countInStock: number;
   reviews: Review[];
-  createdAt: Date;
-  updatedAt: Date;
+  createdAt: string;
+  updatedAt: string;
 }
 
 export interface Review {
@@ -23,14 +23,14 @@ export interface Review {
   comment: string;
   user: string;
   _id: string;
-  createdAt: Date;
-  updatedAt: Date;
+  createdAt: string;
+  updatedAt: string;
 }
 
 export interface ProductImage {
   name: string;
   type: string;
-  lastModified: Date;
+  lastModified: string;
 }
 
 // Users
@@ -39,6 +39,8 @@ export interface UserInfo {
   name: string;
   email: string;
   isAdmin: boolean;
+  createdAt: string;
+  updatedAt: string;
 }
 
 // Carts
@@ -68,7 +70,10 @@ export interface Order {
     country: string;
   },
   _id: string;
-  user: UserInfo['_id'];
+  user: {
+    name: UserInfo['name'];
+    _id: UserInfo['_id']
+  }
   orderItems: OrderItem[];
   paymentMethod: string;
   itemsPrice: number;

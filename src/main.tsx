@@ -13,7 +13,7 @@ import { PayPalScriptProvider } from '@paypal/react-paypal-js';
 import PrivateRoute from './components/PrivateRoute';
 import AdminRoute from './components/AdminRoute';
 
-import App from './App.jsx'
+import App from './App'
 import HomeScreen from './screens/Shopping/HomeScreen';
 import ProductScreen from './screens/Shopping/ProductScreen';
 import CartScreen from './screens/Shopping/CartScreen';

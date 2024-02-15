@@ -1,26 +1,36 @@
 import { useState } from 'react'
 import { Link } from 'react-router-dom';
-import { FaTrash, FaEdit, FaCheck, FaTimes } from 'react-icons/fa';
-import Message from '../../components/Message';
-import Loader from '../../components/Loader';
-import Paginate from '../../components/Paginate';
-import Modal from '../../components/Modal';
 import {
   useDeleteUserMutation,
   useGetUsersQuery,
 } from '../../slices/usersApiSlice';
+import { errorMessage, isFetchBaseQueryError, isErrorWithMessage } from '../../utils/helpers';
+import { initialDialogValue } from '../../utils/constants'
+import { UserInfo } from '../../shared.types'
+
+import { FaTrash, FaEdit, FaCheck, FaTimes } from 'react-icons/fa';
+import Loader from '../../components/Loader';
+import Paginate from '../../components/Paginate';
+import Modal from '../../components/Modal';
 import { toast } from 'react-toastify';
 
 const UserListScreen = () => {
-  const { data: users, refetch, isLoading, error } = useGetUsersQuery();
+  const { data, refetch, isLoading, error } = useGetUsersQuery();
 
   const [isOpen, setIsOpen] = useState(false);
-  const [dialog, setDialog] = useState({})
+  const [dialog, setDialog] = useState<{ 
+    title: string; 
+    body?: string; 
+    yesButtonText: string; 
+    noButtonText: string; 
+    handleYesClick: () => void; 
+    handleNoClick: () => void; 
+  }>(initialDialogValue);
 
   const openModal = () => setIsOpen(true);
   const closeModal = () => setIsOpen(false);
   
-  const handleDeleteClick = (user) => {
+  const handleDeleteClick = (user: UserInfo) => {
     setDialog({
       title: `Are you sure you want do delete '${user.name}'?`,
       handleYesClick: () => deleteHandler(user),
@@ -33,7 +43,7 @@ const UserListScreen = () => {
 
   const [deleteUser] = useDeleteUserMutation();
 
-  const deleteHandler = async (user) => {
+  const deleteHandler = async (user: UserInfo) => {
       try {
         await deleteUser(user._id);
         refetch();
@@ -41,19 +51,24 @@ const UserListScreen = () => {
         closeModal()
         toast.success('User deleted successfully')
       } catch (err) {
-        toast.error(err?.data?.message || err.error);
+        if (isFetchBaseQueryError(err)) {
+          // Access all properties of `FetchBaseQueryError` here
+          const errMsg = 'error' in err ? err.error : JSON.stringify(err.data)
+          toast.error(errMsg)
+        } else if (isErrorWithMessage(err)) {
+          // Access a string 'message' property here
+          toast.error(err.message)
+        }
       }
   };
 
   return (
     <>
       <Modal
-        isOpen={isOpen}
+        isOpen={ isOpen }
         openModal={openModal}
-        closeModal={closeModal}
+        closeModal={ closeModal }
         dialog={ dialog }
-        handleYesClick={dialog.handleYesClick}
-        handleNoClick={dialog.handleNoClick}
       />
       <div className="container px-4 py-8 mx-auto">
         <div className="sm:flex sm:items-center sm:justify-between">
@@ -62,7 +77,7 @@ const UserListScreen = () => {
         {isLoading ? (
           <Loader customClass='min-h-screen my-4'/>
         ) : error ? (
-          <Message variant='error'>{error?.data.message}</Message>
+          errorMessage(error)
         ) : (
         <>
           <div className="flex flex-col mt-6 px-4 md:px-0">
@@ -93,7 +108,7 @@ const UserListScreen = () => {
                       </tr>
                     </thead>
                     <tbody className="bg-white divide-y divide-gray-200">
-                      {users.map((user) => (
+                      {data && data.map((user) => (
                         <tr key={user._id}>
                           <td className="px-4 py-4 text-sm text-gray-500 whitespace-nowrap">{user._id}</td>
                           <td className="px-4 py-4 text-sm text-gray-500 whitespace-nowrap">{user.name}</td>
@@ -127,7 +142,8 @@ const UserListScreen = () => {
               </div>
             </div>
           </div>
-          <Paginate pages={ users.pages } page={ users.page } isAdmin={ true } />
+          {/* To be done */}
+          {/* {data && <Paginate pages={ data.pages } page={ data.page } isAdmin={ true } />} */}
         </>
         )}
       </div>

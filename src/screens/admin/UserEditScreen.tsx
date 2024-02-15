@@ -1,16 +1,18 @@
 import { useEffect, useState } from 'react';
 import { Link, useNavigate, useParams } from 'react-router-dom';
-import Message from '../../components/Message';
-import Loader from '../../components/Loader';
-import FormContainer from '../../components/FormContainer';
-import { toast } from 'react-toastify';
+
 import {
   useGetUserDetailsQuery,
   useUpdateUserMutation,
 } from '../../slices/usersApiSlice';
+import { errorMessage, isFetchBaseQueryError, isErrorWithMessage } from '../../utils/helpers';
+
+import Loader from '../../components/Loader';
+import FormContainer from '../../components/FormContainer';
+import { toast } from 'react-toastify';
 
 const UserEditScreen = () => {
-  const { id: userId } = useParams();
+  const { id: userId = '' } = useParams();
 
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
@@ -26,7 +28,7 @@ const UserEditScreen = () => {
   const navigate = useNavigate();
   const [updateUser, { isLoading: loadingUpdate }] = useUpdateUserMutation();
 
-  const submitHandler = async (e) => {
+  const submitHandler = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
     try {
@@ -35,7 +37,14 @@ const UserEditScreen = () => {
       refetch();
       navigate('/admin/userlist');
     } catch (err) {
-      toast.error(err?.data?.message || err.error);
+      if (isFetchBaseQueryError(err)) {
+        // Access all properties of `FetchBaseQueryError` here
+        const errMsg = 'error' in err ? err.error : JSON.stringify(err.data)
+        toast.error(errMsg)
+      } else if (isErrorWithMessage(err)) {
+        // Access a string 'message' property here
+        toast.error(err.message)
+      }
     }
   };
 
@@ -62,9 +71,7 @@ const UserEditScreen = () => {
           {isLoading ? (
             <Loader customClass='min-h-screen my-4'/>
           ) : error ? (
-            <Message variant='error'>
-              {error?.data?.message || error.error}
-            </Message>
+            errorMessage(error)
           ) : (
           <form onSubmit={submitHandler}>
             <div className="grid grid-cols-1 gap-6 mt-4 sm:grid-cols-2">

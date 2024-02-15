@@ -1,22 +1,23 @@
 import { useState, useEffect } from 'react';
 import { Link, useNavigate, useParams } from 'react-router-dom';
-import Message from '../../components/Message';
-import Loader from '../../components/Loader';
-import FormContainer from '../../components/FormContainer';
-import { toast } from 'react-toastify';
+
 import {
   useGetProductDetailsQuery,
   useUpdateProductMutation,
   useUploadProductImageMutation
 } from '../../slices/productsApiSlice';
-import { modifiedImageName, originalImageName } from '../../utils/helpers';
+import { errorMessage, isFetchBaseQueryError, isErrorWithMessage, modifiedImageName, originalImageName } from '../../utils/helpers';
+
+import Loader from '../../components/Loader';
+import FormContainer from '../../components/FormContainer';
+import { toast } from 'react-toastify';
 
 const ProductEditScreen = () => {
-  const { id: productId } = useParams();
+  const { id: productId = '' } = useParams();
 
   const [name, setName] = useState('');
   const [price, setPrice] = useState(0);
-  const [image, setImage] = useState({});
+  const [image, setImage] = useState<File | null>(null);
   const [brand, setBrand] = useState('');
   const [category, setCategory] = useState('');
   const [countInStock, setCountInStock] = useState(0);
@@ -44,12 +45,20 @@ const ProductEditScreen = () => {
   const [uploadProductImage, { isLoading: loadingUpload }] =
     useUploadProductImageMutation();
   
-  const handleImageChange = (e) => setImage(e.target.files[0])
+  const handleImageChange = (e: React.FormEvent<HTMLInputElement>) => {
+    const { target } = e
+    if (!target || !(target instanceof HTMLInputElement)) return;
+  
+    const file = target.files?.[0]
+    if (!file) return;
+
+    setImage(file)
+  }
 
   const uploadImageHandler = async () => {
     let newImage
     if (image?.name) {
-       newImage = new File(
+        newImage = new File(
         [image],
         modifiedImageName(productId, image?.name),
         {
@@ -65,7 +74,14 @@ const ProductEditScreen = () => {
     try {
       await uploadProductImage(formData).unwrap();
     } catch (err) {
-      toast.error(err?.data?.message || err.error);
+      if (isFetchBaseQueryError(err)) {
+        // Access all properties of `FetchBaseQueryError` here
+        const errMsg = 'error' in err ? err.error : JSON.stringify(err.data)
+        toast.error(errMsg)
+      } else if (isErrorWithMessage(err)) {
+        // Access a string 'message' property here
+        toast.error(err.message)
+      }
     }
   };
   
@@ -75,7 +91,7 @@ const ProductEditScreen = () => {
 
   const navigate = useNavigate();
 
-  const submitHandler = async (e) => {
+  const submitHandler = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     try {
       await updateProduct({
@@ -84,8 +100,8 @@ const ProductEditScreen = () => {
         price,
         image: {
           name: modifiedImageName(productId, image?.name),
-          type: image?.type,
-          lastModified: image?.lastModified,
+          type: image?.type!,
+          lastModified: image?.lastModified ? new Date(image.lastModified).toString() : '',
         },
         brand,
         category,
@@ -99,7 +115,14 @@ const ProductEditScreen = () => {
       refetch();
       navigate('/admin/productlist');
     } catch (err) {
-      toast.error(err?.data?.message || err.error);
+      if (isFetchBaseQueryError(err)) {
+        // Access all properties of `FetchBaseQueryError` here
+        const errMsg = 'error' in err ? err.error : JSON.stringify(err.data)
+        toast.error(errMsg)
+      } else if (isErrorWithMessage(err)) {
+        // Access a string 'message' property here
+        toast.error(err.message)
+      }
     }
   };
 
@@ -117,9 +140,7 @@ const ProductEditScreen = () => {
           {isLoading || loadingUpdate ? (
             <Loader customClass='min-h-screen my-4'/>
           ) : error ? (
-            <Message variant='error'>
-              {error?.data?.message || error.error}
-            </Message>
+            errorMessage(error)
           ) : (
           <form onSubmit={submitHandler}>
             <div className="grid grid-cols-1 mt-4">
@@ -142,7 +163,7 @@ const ProductEditScreen = () => {
                   id='price'
                   placeholder='Enter price'
                   value={price}
-                  onChange={(e) => setPrice(e.target.value)}
+                  onChange={(e) => setPrice(parseInt(e.target.value))}
                   className="block w-full px-4 py-2 mt-2 text-gray-700 bg-white border border-gray-200 rounded-md focus:border-blue-400 focus:ring-blue-300 focus:ring-opacity-40 focus:outline-none focus:ring"
                 />
               </div>
@@ -157,7 +178,6 @@ const ProductEditScreen = () => {
                 <input
                   type="file"
                   name="image"
-                  label="Choose File"
                   accept="image/*"
                   onChange={(e) => handleImageChange(e)}
                   className='mt-1 pt-2 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100'

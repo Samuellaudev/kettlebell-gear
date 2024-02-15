@@ -28,6 +28,8 @@ const Modal = ({
     handleNoClick: () => {}
   },
 }: ModalProps) => {
+  if (!isOpen || !dialog) return null; // If dialog is null or isOpen is false, return null
+
   const {
     title,
     body,
