@@ -1,12 +1,14 @@
-export const addDecimals = (num) => {
-  return (Math.round(num * 100) / 100).toFixed(2);
+import { CartState } from '../slices/cartSlice'
+
+export const addDecimals = (num: number): number => {
+  return parseFloat((Math.round(num * 100) / 100).toFixed(2));
 };
 
-export const updateCart = (state) => {
+export const updateCart = (state: CartState) => {
   // Calculate the items price in whole number (pennies) to avoid issues with
   // floating point number calculations
   const itemsPrice = state.cartItems.reduce(
-    (acc, item) => acc + (item.price * 100 * item.qty) / 100,
+    (acc, item) => acc + (item.price * 100 * item.qty!) / 100,
     0
   );
   state.itemsPrice = addDecimals(itemsPrice);

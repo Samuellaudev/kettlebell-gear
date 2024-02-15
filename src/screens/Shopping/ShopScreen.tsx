@@ -1,6 +1,8 @@
 import { useState, useEffect } from 'react'
 import { useParams } from 'react-router-dom';
 import { useGetProductsQuery } from '../../slices/productsApiSlice';
+import { Product as ProductType } from '../../shared.types';
+
 import Product from '../../components/Product';
 import Loader from '../../components/Loader';
 import Message from '../../components/Message';
@@ -8,16 +10,17 @@ import Paginate from '../../components/Paginate';
 import Dropdown from '../../components/Dropdown';
 import Breadcrumb from '../../components/Breadcrumb';
 import BackToTop from '../../components/Utility/BackToTop';
-import { productsByTimestamps } from '../../utils/helpers'
+import { errorMessage } from '../../utils/helpers'
 
 const ShopScreen = () => {
-  const { pageNumber } = useParams();
+  const { pageNumber = '', keyword = '' } = useParams<{ pageNumber: string; keyword: string }>();
 
   const { data, isLoading, error } = useGetProductsQuery({
-    pageNumber
+    pageNumber,
+    keyword
   });
 
-  const [filteredProducts, setFilteredProducts] = useState([])
+  const [filteredProducts, setFilteredProducts] = useState<ProductType[]>([])
   const [inStock, setInStock] = useState(false)
   const [outOfStock, setOutOfStock] = useState(false)
   const [filterMinPrice, setFilterMinPrice] = useState(0)
@@ -25,14 +28,14 @@ const ShopScreen = () => {
 
   useEffect(() => {
     if (!isLoading && data) {
-      const createdDateDescending = productsByTimestamps(data.products).sort((a, b) => b.createdAt - a.createdAt);
+      const createdDateDescending = data.products.sort((a, b) => (new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()))
     
       setFilteredProducts(createdDateDescending || []);
     }
   }, [data, isLoading]);
 
-  const productOutOfStock = !isLoading && [...data.products].filter(item => item.countInStock === 0)
-  const productInStock = !isLoading && [...data.products].filter(item => item.countInStock > 0)
+  const productOutOfStock = !isLoading && data?.products?.filter(item => item.countInStock === 0) || []
+  const productInStock = !isLoading && data?.products?.filter(item => item.countInStock > 0) || []
   const countInStock = productOutOfStock.length
   const countOutOfStock = productInStock.length
 
@@ -40,9 +43,13 @@ const ShopScreen = () => {
     if (!inStock) {
       setInStock(true)
 
-      outOfStock
-        ? setFilteredProducts([...data.products])
-        : setFilteredProducts(productInStock)
+      if (outOfStock) {
+        if (data && data.products) {
+          setFilteredProducts(data.products);
+        }
+      } else {
+        setFilteredProducts(productInStock)
+      }
     } else {
       if (outOfStock) {
         setFilteredProducts(productOutOfStock)
@@ -56,9 +63,13 @@ const ShopScreen = () => {
     if (!outOfStock) {
       setOutOfStock(true)
 
-      inStock
-        ? setFilteredProducts([...data.products])
-        : setFilteredProducts(productOutOfStock)
+      if (inStock) {
+        if (data && data.products) {
+          setFilteredProducts(data.products);
+        }
+      } else {
+        setFilteredProducts(productOutOfStock)
+      }
     } else {
       if (inStock) {
         setFilteredProducts(productInStock)
@@ -73,8 +84,11 @@ const ShopScreen = () => {
     handlePriceChange()
   }, [filterMinPrice, filterMaxPrice])
 
-  const handleMinPriceChange = (e) => {
-    const typedPrice = Number(e.target.value)
+  const handleMinPriceChange = (e: React.FormEvent<HTMLInputElement>) => {
+    const { target } = e
+    if (!target) return
+
+    const typedPrice = Number((target as HTMLButtonElement).value)
 
     if (typedPrice < 0) {
       setFilterMinPrice(0)
@@ -83,8 +97,12 @@ const ShopScreen = () => {
 
     setFilterMinPrice(typedPrice)
   }
-  const handleMaxPriceChange = (e) => {
-    const typedPrice = Number(e.target.value)
+
+  const handleMaxPriceChange = (e: React.FormEvent<HTMLInputElement>) => {
+    const { target } = e
+    if (!target) return
+
+    const typedPrice = Number((target as HTMLButtonElement).value)
 
     if (typedPrice > 1000) {
       setFilterMaxPrice(1000)
@@ -93,8 +111,9 @@ const ShopScreen = () => {
 
     setFilterMaxPrice(typedPrice)
   }
+
   const handlePriceChange = () => {
-    const result = data?.products.filter(product => product.price >= filterMinPrice && product.price <= filterMaxPrice);
+    const result = data?.products?.filter(product => product.price >= filterMinPrice && product.price <= filterMaxPrice) ?? [];
 
     setFilteredProducts(result)
   }
@@ -104,7 +123,10 @@ const ShopScreen = () => {
     setFilterMaxPrice(1000)
     setInStock(false)
     setOutOfStock(false)
-    setFilteredProducts(data.products)
+    
+    if (data && data.products) {
+      setFilteredProducts(data.products);
+    }
   }
 
   // Sort by - options
@@ -117,11 +139,11 @@ const ShopScreen = () => {
     setFilteredProducts(priceDescending)
   }
   const handleCreateAscClick = () => {
-    const createdDateAscending = productsByTimestamps(filteredProducts).sort((a, b) => a.createdAt - b.createdAt);
+    const createdDateAscending = filteredProducts.sort((a, b) => (new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime()))
     setFilteredProducts(createdDateAscending)
   }
   const handleCreateDescClick = () => {
-    const createdDateDescending = productsByTimestamps(filteredProducts).sort((a, b) => b.createdAt - a.createdAt);
+    const createdDateDescending = filteredProducts.sort((a, b) => (new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime()))
     setFilteredProducts(createdDateDescending)
   }
 
@@ -254,10 +276,10 @@ const ShopScreen = () => {
           { isLoading ? (
             <Loader customClass='min-h-screen' />
           ) : error ? (
-            <Message variant='error'>{ error?.data.message || error?.error }</Message>
+            errorMessage(error)
           ) : filteredProducts?.length === 0 ? (
             <div className='w-full md:w-5/6'>
-              <Message variant="info">No products found.</Message>
+              <Message>No products found.</Message>
             </div>
           ) : (
             <div className='right-panel md:w-5/6'>
@@ -279,8 +301,8 @@ const ShopScreen = () => {
                 )) }
               </div>
               <Paginate
-                pages={ data.pages }
-                page={ data.page }
+                pages={ data?.pages! }
+                page={ data?.page! }
               />
             </div>
           ) }

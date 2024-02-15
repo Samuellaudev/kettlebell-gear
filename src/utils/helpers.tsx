@@ -15,17 +15,6 @@ export const originalImageName = (imageName = '') => {
   return imageName;
 };
 
-export const productsByTimestamps = (filteredProducts: Product[]) => {
-  const result = filteredProducts.map(item => {
-    return {
-      ...item,
-      createdAt: new Date(item.createdAt).getTime()
-    }
-  })
-
-  return result
-}
-
 /**
  * Type safe error handling:
  * https://redux-toolkit.js.org/rtk-query/usage-with-typescript#type-safe-error-handling

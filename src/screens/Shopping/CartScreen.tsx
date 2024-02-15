@@ -1,23 +1,36 @@
 import { Link, useNavigate } from 'react-router-dom';
-import { useDispatch, useSelector } from 'react-redux';
+import { useAppSelector, useAppDispatch } from '../../hooks'
+import { CartItem as CartItemType } from '../../shared.types'
+
 import { FaTrash } from 'react-icons/fa';
 import Message from '../../components/Message';
 import ProductImage from '../../components/ProductImage';
 import Breadcrumb from '../../components/Breadcrumb';
 import { addToCart, removeFromCart } from '../../slices/cartSlice';
 
+interface CartSummaryProps {
+  cartItems: CartItemType[];
+  checkoutHandler: () => void;
+}
+
+interface CartItemProps {
+  item: CartItemType;
+  addToCartHandler: (item:CartItemType, qty: number) => void;
+  removeFromCartHandler: (id :CartItemType['_id']) => void;
+}
+
 const CartScreen = () => {
   const navigate = useNavigate();
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
 
-  const cart = useSelector((state) => state.cart);
+  const cart = useAppSelector((state) => state.cart);
   const { cartItems } = cart;
 
-  const addToCartHandler = async (product, qty) => {
-    dispatch(addToCart({ ...product, qty }));
+  const addToCartHandler = async (item: CartItemType, qty: CartItemType['qty']) => {
+    dispatch(addToCart({ ...item, qty }));
   };
 
-  const removeFromCartHandler = (id) => {
+  const removeFromCartHandler = (id: CartItemType['_id']) => {
     dispatch(removeFromCart(id));
   };
 
@@ -25,9 +38,9 @@ const CartScreen = () => {
     navigate('/login?redirect=/shipping');
   };
 
-  const CartItem = ({ item, addToCartHandler, removeFromCartHandler }) => (
+  const CartItem = ({ item, addToCartHandler, removeFromCartHandler }: CartItemProps) => (
     <li className="py-4 md:mr-6 flex items-center">
-      <ProductImage product={item } alt={item.name} customClass="w-1/4 md:w-1/5 rounded-md mr-4 self-start" />
+      <ProductImage product={item } customClass="w-1/4 md:w-1/5 rounded-md mr-4 self-start" />
       
       <div className='w-full flex flex-col md:flex-row items-left md:items-center justify-around space-y-2'>
         <Link to={ `/product/${ item._id }` } className="text-blue-500">{ item.name }</Link>
@@ -60,16 +73,16 @@ const CartScreen = () => {
     </li>
   );
 
-  const CartSummary = ({ cartItems, checkoutHandler }) => (
+  const CartSummary = ({ cartItems, checkoutHandler }: CartSummaryProps) => (
     <div className='w-full md:w-4/12 md:mx-auto mt-6 md:mt-0'>
       <div className="border border-gray-200 rounded-lg p-4">
         <ul className="divide-y divide-gray-200">
           <li className="py-4">
             <h2 className="text-lg font-semibold">
-              Subtotal ({cartItems.reduce((acc, item) => acc + item.qty, 0)}) items
+              Subtotal ({cartItems.reduce((acc, item) => acc + item.qty!, 0)}) items
             </h2>
             <span className="text-gray-700 block">
-              ${cartItems.reduce((acc, item) => acc + item.qty * item.price, 0).toFixed(2)}
+              ${cartItems.reduce((acc, item) => acc + item.qty! * item.price, 0).toFixed(2)}
             </span>
           </li>
           <li className="py-4">
@@ -107,12 +120,12 @@ const CartScreen = () => {
               <div className='w-full flex items-start justify-start space-y-2'>
                 <Message>
                   Your cart is empty.{' '}
-                <Link
-                  onClick={() => navigate(-1)}
-                  className="text-blue-500"
-                >
-                  Go Back
-                </Link>
+                  <button
+                    onClick={() => navigate(-1)}
+                    className="text-blue-500"
+                  >
+                    Go Back
+                  </button>
                 </Message>
                 </div>
             ) : (

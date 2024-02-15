@@ -11,7 +11,7 @@ import {
 
 export const productsApiSlice = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
-    getProducts: builder.query<ProductsResponse, { keyword: string;  pageNumber: number }>({
+    getProducts: builder.query<ProductsResponse, { keyword: string;  pageNumber: string }>({
       query: ({ keyword, pageNumber }) => ({
         url: PRODUCTS_URL,
         params: { keyword, pageNumber },
@@ -68,7 +68,9 @@ export const productsApiSlice = apiSlice.injectEndpoints({
       invalidatesTags: ['Product'],
     }),
     getTopProducts: builder.query<TopProductsResponse, void>({
-      query: () => `${PRODUCTS_URL}/top`,
+      query: () => ({
+        url: `${ PRODUCTS_URL }/top`
+      }),
       keepUnusedDataFor: 5,
     }),
   }),

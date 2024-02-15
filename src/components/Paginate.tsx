@@ -3,8 +3,8 @@ import { Link } from 'react-router-dom'
 interface PaginateProps {
   pages: number;
   page: number;
-  isAdmin: boolean;
-  keyword: string;
+  isAdmin?: boolean;
+  keyword?: string;
 }
 
 const Paginate = ({
