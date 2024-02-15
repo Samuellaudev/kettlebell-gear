@@ -28,8 +28,8 @@ const ShopScreen = () => {
 
   useEffect(() => {
     if (!isLoading && data) {
-      const createdDateDescending = data.products.sort((a, b) => (new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()))
-    
+      const createdDateDescending = [...data.products].sort((a, b) => (new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()))
+
       setFilteredProducts(createdDateDescending || []);
     }
   }, [data, isLoading]);
@@ -139,11 +139,11 @@ const ShopScreen = () => {
     setFilteredProducts(priceDescending)
   }
   const handleCreateAscClick = () => {
-    const createdDateAscending = filteredProducts.sort((a, b) => (new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime()))
+    const createdDateAscending = [...filteredProducts].sort((a, b) => new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime());
     setFilteredProducts(createdDateAscending)
   }
   const handleCreateDescClick = () => {
-    const createdDateDescending = filteredProducts.sort((a, b) => (new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime()))
+    const createdDateDescending = [...filteredProducts].sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
     setFilteredProducts(createdDateDescending)
   }
 
