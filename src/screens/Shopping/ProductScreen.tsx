@@ -213,10 +213,10 @@ const ProductScreen = () => {
                 { renderReviewForm() }
                 <div className='customer-reviews w-4/6'>
                   <div className='pt-4'>
-                    { product?.reviews.length === 0 && <Message>No Reviews</Message> }
+                    { product?.reviews?.length === 0 && <Message>No Reviews</Message> }
                   </div>
                   <ul className="divide-y divide-gray-200">
-                    {product?.reviews.map((review) => (
+                    {product?.reviews?.map((review) => (
                       <li key={review._id} className="md:py-7">
                         <div className="font-semibold text-gray-600">{review.name}</div>
                         <Rating value={review.rating} />

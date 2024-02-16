@@ -11,7 +11,7 @@ interface ProductProp {
 const Product = ({ product }: ProductProp) => {
   const checkCountInStock = () => {
     return (
-      product.countInStock > 0
+      product?.countInStock! > 0
         ? <span className='bg-green-500 text-white px-2 py-1 text-xs rounded-md'>IN STOCK</span>
         : <span className='bg-gray-500 text-white px-2 py-1 text-xs rounded-md'>OUT OF STOCK</span>
     )
@@ -29,7 +29,7 @@ const Product = ({ product }: ProductProp) => {
         {checkCountInStock()}
         <h3 className="text-lg pt-2">£{product?.price}</h3>
         <div className="flex justify-center">
-          <Rating value={product?.rating} text={`${product?.numReviews} reviews`} />
+          <Rating value={product?.rating ?? 0} text={`${product?.numReviews} reviews`} />
         </div>
       </div>
     </div>

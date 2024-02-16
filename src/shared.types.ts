@@ -6,15 +6,15 @@ export interface Product {
   image: ProductImage;
   price: number;
   user?: string;
-  brand?: string;
-  category?: string;
-  description?: string;
+  brand: string;
+  category: string;
+  description: string;
   rating?: number;
   numReviews?: number;
-  countInStock?: number;
+  countInStock: number;
   reviews?: Review[];
-  createdAt?: string;
-  updatedAt?: string;
+  createdAt: string;
+  updatedAt: string;
 }
 
 export interface Review {

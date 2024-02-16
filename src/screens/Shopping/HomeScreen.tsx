@@ -22,7 +22,7 @@ const HomeScreen = () => {
   if (!isLoading && data?.products) {
     const createdDateDescending = data.products.map(product => ({
       ...product,
-      createdAt: new Date(product.createdAt).getTime() 
+      createdAt: product.createdAt ? new Date(product.createdAt).getTime() : 0
     })).sort((a, b) => b.createdAt - a.createdAt);
     
     latestProducts = createdDateDescending

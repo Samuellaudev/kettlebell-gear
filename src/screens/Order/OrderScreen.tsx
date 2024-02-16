@@ -183,7 +183,7 @@ const OrderScreen = () => {
                     { order.orderItems.map((item, index) => (
                       <li key={ index } className="bg-white mb-4">
                         <div className="flex items-center">
-                          <ProductImage product={ item } customClass="w-16 rounded-md mr-4" />
+                          <ProductImage product={ item as any} customClass="w-16 rounded-md mr-4" />
                           <div>
                             <Link to={ `/product/${ item.product }` } className="text-blue-500 font-semibold">{ item.name }</Link>
                             <p className='font-medium text-gray-600'>
