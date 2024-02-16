@@ -23,7 +23,7 @@ const Paginate = ({
                 to={ !isAdmin
                   ? keyword
                     ? `/search/${keyword}/page/${x + 1}`
-                    : `/page/${x + 1}`
+                    : `/shop/page/${x + 1}`
                   : `/admin/productlist/${ x + 1 }` }
                 className={`${
                   x + 1 === page ? "bg-blue-500 text-white" : "text-blue-500"

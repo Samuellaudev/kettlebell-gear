@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { useParams } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import { useGetProductsQuery } from '../../slices/productsApiSlice';
 import { Product as ProductType } from '../../shared.types';
 
@@ -14,6 +14,7 @@ import { errorMessage } from '../../utils/helpers'
 
 const ShopScreen = () => {
   const { pageNumber = '', keyword = '' } = useParams<{ pageNumber: string; keyword: string }>();
+  const navigate = useNavigate();
 
   const { data, isLoading, error } = useGetProductsQuery({
     pageNumber,
@@ -123,8 +124,9 @@ const ShopScreen = () => {
     setFilterMaxPrice(1000)
     setInStock(false)
     setOutOfStock(false)
-    
+
     if (data && data.products) {
+      navigate('/shop/page/1')
       setFilteredProducts(data.products);
     }
   }
