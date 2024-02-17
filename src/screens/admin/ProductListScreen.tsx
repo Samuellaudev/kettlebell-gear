@@ -143,6 +143,9 @@ const ProductListScreen = () => {
                         <th scope="col" className="px-12 py-3.5 text-sm font-normal text-center rtl:text-right text-gray-500">
                             NAME
                         </th>
+                        <th scope="col" className="px-12 py-3.5 text-sm font-normal text-center rtl:text-right text-gray-500">
+                            Stock
+                        </th>
                         <th scope="col" className="px-4 py-3.5 text-sm font-normal text-center rtl:text-right text-gray-500">
                             PRICE
                         </th>
@@ -162,6 +165,7 @@ const ProductListScreen = () => {
                         <tr key={product._id}>
                           <td className="px-4 py-4 text-sm text-gray-500 whitespace-nowrap">{product._id}</td>
                           <td className="px-4 py-4 text-sm text-gray-500 whitespace-nowrap">{product.name}</td>
+                          <td className="px-4 py-4 text-sm text-gray-500 whitespace-nowrap">{product.countInStock}</td>
                           <td className="px-4 py-4 text-sm text-gray-500 whitespace-nowrap">${product.price}</td>
                           <td className="px-4 py-4 text-sm text-gray-500 whitespace-nowrap">{product.category}</td>
                           <td className="px-4 py-4 text-sm text-gray-500 whitespace-nowrap">{product.brand}</td>

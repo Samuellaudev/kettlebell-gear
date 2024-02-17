@@ -112,8 +112,8 @@ const ProductEditScreen = () => {
       await uploadImageHandler()
 
       toast.success('product updated successfully');
-      refetch();
       navigate('/admin/productlist');
+      refetch();
     } catch (err) {
       if (isFetchBaseQueryError(err)) {
         // Access all properties of `FetchBaseQueryError` here
@@ -164,6 +164,18 @@ const ProductEditScreen = () => {
                   placeholder='Enter price'
                   value={price}
                   onChange={(e) => setPrice(parseInt(e.target.value))}
+                  className="block w-full px-4 py-2 mt-2 text-gray-700 bg-white border border-gray-200 rounded-md focus:border-blue-400 focus:ring-blue-300 focus:ring-opacity-40 focus:outline-none focus:ring"
+                />
+              </div>
+
+              <div className="mb-4">
+                <label htmlFor="countInStock" className="block text-sm font-medium text-gray-700">Count In Stock</label>
+                <input
+                  type='number'
+                  id='countInStock'
+                  placeholder='Enter number'
+                  value={countInStock}
+                  onChange={(e) => setCountInStock(parseInt(e.target.value))}
                   className="block w-full px-4 py-2 mt-2 text-gray-700 bg-white border border-gray-200 rounded-md focus:border-blue-400 focus:ring-blue-300 focus:ring-opacity-40 focus:outline-none focus:ring"
                 />
               </div>

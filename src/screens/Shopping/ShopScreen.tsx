@@ -37,8 +37,8 @@ const ShopScreen = () => {
 
   const productOutOfStock = !isLoading && data?.products?.filter(item => item.countInStock === 0) || []
   const productInStock = !isLoading && data?.products?.filter(item => item.countInStock! > 0) || []
-  const countInStock = productOutOfStock.length
-  const countOutOfStock = productInStock.length
+  const countInStock = productInStock.length
+  const countOutOfStock = productOutOfStock.length
 
   const handleInStockClick = () => {
     if (!inStock) {
