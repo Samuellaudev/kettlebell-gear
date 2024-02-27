@@ -71,7 +71,7 @@ const RegisterScreen = () => {
     try {
       const res = await register({ name, email, password }).unwrap();
 
-      dispatch(setCredentials({ ...res }));
+      // dispatch(setCredentials({ ...res }));
       askForEmailVerification()
     } catch (err) {
       if (isFetchBaseQueryError(err)) {

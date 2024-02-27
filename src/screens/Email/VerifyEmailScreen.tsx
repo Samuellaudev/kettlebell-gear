@@ -46,7 +46,7 @@ const VerifyEmailScreen = () => {
           <p>Kindly log in to resume your shopping experience.</p>
         </div>
         <p className="border border-gray-300 rounded-md cursor-pointer px-6 py-2 text-sm font-medium tracking-wide text-white capitalize transition-colors duration-300 transform bg-blue-500 hover:bg-blue-400 focus:outline-none focus:ring focus:ring-blue-300 focus:ring-opacity-50">
-          <Link to='/shop'>Go to login</Link>
+          <Link to='/login'>Go to login</Link>
         </p>
       </div>
     </div>

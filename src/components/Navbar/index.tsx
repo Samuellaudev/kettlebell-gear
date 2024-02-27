@@ -156,8 +156,9 @@ const Navbar = () => {
               </div>
             ) : (
               <NavLink
-                to="/login"
                 className="text-gray-700 flex items-center transition-colors duration-300 transform  hover:text-blue-500 md:mx-4 md:my-0"
+                to="/login"
+                onClick={ toggleMobileMenu }
               >
                 Login
               </NavLink>
