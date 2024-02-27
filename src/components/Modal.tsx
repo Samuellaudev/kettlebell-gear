@@ -9,9 +9,9 @@ interface ModalProps {
     title: string;
     body?: string;
     yesButtonText: string;
-    noButtonText: string;
+    noButtonText?: string;
     handleYesClick: () => void;
-    handleNoClick: () => void;
+    handleNoClick?: () => void;
   };
 }
 
@@ -86,15 +86,17 @@ const Modal = ({
                         {yesButtonText}
                       </button>
                     </div>
-                    <div className="mt-4">
-                      <button
-                        type="button"
-                        className="px-4 py-2 inline-flex justify-center rounded-md border border-transparent text-sm font-medium text-red-900 bg-red-100 hover:bg-red-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-primary-500 focus-visible:ring-offset-2"
-                        onClick={handleNoClick}
-                      >
-                        {noButtonText}
-                      </button>
-                    </div>
+                    { noButtonText && 
+                      <div className="mt-4">
+                        <button
+                          type="button"
+                          className="px-4 py-2 inline-flex justify-center rounded-md border border-transparent text-sm font-medium text-red-900 bg-red-100 hover:bg-red-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-primary-500 focus-visible:ring-offset-2"
+                          onClick={handleNoClick}
+                        >
+                          {noButtonText}
+                        </button>
+                      </div>
+                    }
                   </div>
                 </Dialog.Panel>
               </Transition.Child>

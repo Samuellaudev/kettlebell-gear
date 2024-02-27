@@ -23,6 +23,8 @@ import LoginScreen from './screens/Authentication/LoginScreen';
 import RegisterScreen from './screens/Authentication/RegisterScreen';
 import ProfileScreen from './screens/Authentication/ProfileScreen';
 
+import VerifyEmailScreen from './screens/Email/VerifyEmailScreen';
+
 import ShippingScreen from './screens/Order/ShippingScreen';
 import PaymentScreen from './screens/Order/PaymentScreen';
 import PlaceOrderScreen from './screens/Order/PlaceOrderScreen';
@@ -47,6 +49,7 @@ const router = createBrowserRouter(
       <Route path='/shop/page/:pageNumber' element={ <ShopScreen /> } />
       <Route path='/login' element={ <LoginScreen /> } />
       <Route path='/register' element={ <RegisterScreen /> } />;
+      <Route path='/emails/verify-email/:verificationString' element={ <VerifyEmailScreen /> } />;
       {/* Registered users */ }
       <Route path='' element={ <PrivateRoute /> }>
         <Route path='/shipping' element={ <ShippingScreen /> } />
