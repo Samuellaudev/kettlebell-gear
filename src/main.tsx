@@ -22,6 +22,8 @@ import ShopScreen from './screens/Shopping/ShopScreen';
 import LoginScreen from './screens/Authentication/LoginScreen';
 import RegisterScreen from './screens/Authentication/RegisterScreen';
 import ProfileScreen from './screens/Authentication/ProfileScreen';
+import AuthGoogleScreen from './screens/Google/AuthGoogleScreen';
+import WelcomeScreen from './screens/Google/WelcomeScreen';
 
 import VerifyEmailScreen from './screens/Email/VerifyEmailScreen';
 
@@ -50,13 +52,15 @@ const router = createBrowserRouter(
       <Route path='/login' element={ <LoginScreen /> } />
       <Route path='/register' element={ <RegisterScreen /> } />;
       <Route path='/emails/verify-email/:verificationString' element={ <VerifyEmailScreen /> } />;
+      <Route path="/auth/google/callback" element={ <AuthGoogleScreen /> } />
       {/* Registered users */ }
       <Route path='' element={ <PrivateRoute /> }>
         <Route path='/shipping' element={ <ShippingScreen /> } />
         <Route path='/payment' element={ <PaymentScreen /> } /> 
         <Route path='/placeorder' element={ <PlaceOrderScreen /> } />
         <Route path='/order/:id' element={ <OrderScreen /> } />
-        <Route path='/profile' element={<ProfileScreen />} />
+        <Route path='/profile' element={ <ProfileScreen /> } />
+        <Route path='/welcome' element={ <WelcomeScreen /> } />
       </Route>;
       {/* Admin users */}
       <Route path='' element={<AdminRoute />}>

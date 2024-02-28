@@ -1,16 +1,17 @@
 import { useState, useEffect } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
-import { useAppSelector, useAppDispatch } from '../../hooks'
+import { useAppSelector } from '../../hooks'
 
 import Loader from '../../components/Loader';
 import FormContainer from '../../components/FormContainer';
 import FormInput from '../../components/Form/FormInput';
 import Modal from '../../components/Modal';
+import GoogleButton from '../../components/Utility/GoogleButton';
 import { initialDialogValue } from '../../utils/constants'
 import { isFetchBaseQueryError, isErrorWithMessage } from '../../utils/helpers';
 
 import { useRegisterMutation } from '../../slices/usersApiSlice';
-import { setCredentials } from '../../slices/authSlice';
+import { useGetGoogleOauthUrlQuery } from '../../slices/googleApiSlice';
 import { toast } from 'react-toastify';
 
 const RegisterScreen = () => {
@@ -18,10 +19,6 @@ const RegisterScreen = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
-
-  const dispatch = useAppDispatch();
-  const navigate = useNavigate();
-
   const [isOpen, setIsOpen] = useState(false);
   const [dialog, setDialog] = useState<{ 
     title: string; 
@@ -29,6 +26,21 @@ const RegisterScreen = () => {
     yesButtonText: string; 
     handleYesClick: () => void; 
   }>(initialDialogValue);
+  const { userInfo } = useAppSelector((state) => state.auth);
+  const navigate = useNavigate();
+  const { search } = useLocation();
+  const searchParams = new URLSearchParams(search);
+  const redirect = searchParams.get('redirect') || '/';
+
+  const [register, { isLoading }] = useRegisterMutation();
+  
+  const { data: googleOauth, isLoading: loadingGoogleOauth, error } = useGetGoogleOauthUrlQuery()
+
+  useEffect(() => {
+    if (userInfo && userInfo.isVerified) {
+      navigate(redirect);
+    }
+  }, [navigate, redirect, userInfo]);  
 
   const openModal = () => setIsOpen(true);
   const closeModal = () => {
@@ -45,20 +57,6 @@ const RegisterScreen = () => {
     })
     openModal()
   }
-  
-  const [register, { isLoading }] = useRegisterMutation();
-  
-  const { userInfo } = useAppSelector((state) => state.auth);
-  
-  const { search } = useLocation();
-  const searchParams = new URLSearchParams(search);
-  const redirect = searchParams.get('redirect') || '/';
-
-  useEffect(() => {
-    if (userInfo && userInfo.isVerified) {
-      navigate(redirect);
-    }
-  }, [navigate, redirect, userInfo]);  
 
   const submitHandler = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -71,7 +69,6 @@ const RegisterScreen = () => {
     try {
       const res = await register({ name, email, password }).unwrap();
 
-      // dispatch(setCredentials({ ...res }));
       askForEmailVerification()
     } catch (err) {
       if (isFetchBaseQueryError(err)) {
@@ -84,6 +81,32 @@ const RegisterScreen = () => {
       }
     }
   };
+
+  const handleGoogleLogin = () => {
+    const width = 520;
+    const height = 640;
+    const left = window.screen.width / 2 - width / 2;
+    const top = window.screen.height / 2 - height / 2;
+    const windowFeatures = `left=${ left },top=${ top },width=${ width },height=${ height }`;
+    
+    const popup = window.open(googleOauth?.url!, 'popup', windowFeatures);
+    const checkPopupInterval = setInterval(() => {
+      if (!popup || popup.closed || popup.closed === undefined) {
+        clearInterval(checkPopupInterval);
+        return;
+      }
+  
+      try {
+        if (popup.location.href.includes('/welcome')) {
+          popup.close();
+          navigate('/shop');
+          clearInterval(checkPopupInterval);
+        }
+      } catch (error) {
+        console.log(error);
+      }
+    }, 1000);
+  }
 
   return (
     <FormContainer>
@@ -150,7 +173,7 @@ const RegisterScreen = () => {
               />
             </div>
 
-            <div className="flex items-center justify-center mt-4">
+            <div className="flex flex-col items-center justify-center mt-4">
               <button
                 type="submit"
                 disabled={isLoading}
@@ -158,6 +181,11 @@ const RegisterScreen = () => {
               >
                   Register
               </button>
+              <GoogleButton
+                disabled={ !googleOauth?.url }
+                handleGoogleLogin={ handleGoogleLogin }
+                buttonType='Continue with Google'
+              />
             </div>
           </form>
           )}

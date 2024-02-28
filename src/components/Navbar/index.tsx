@@ -6,6 +6,7 @@ import { useNavigate } from 'react-router-dom';
 import { useAppSelector, useAppDispatch } from '../../hooks';
 import { NavLink } from "react-router-dom";
 import { resetCart } from '../../slices/cartSlice';
+import { setCredentials } from '../../slices/authSlice';
 import SearchBox from '../SearchBox';
 
 const Navbar = () => {
@@ -29,6 +30,9 @@ const Navbar = () => {
   const toggleAdminDropdown = () => setIsAdminDropdownOpen(!isAdminDropdownOpen);
   const closeAdminDropdown = () => setIsAdminDropdownOpen(false);
 
+  const dispatch = useAppDispatch();
+  const navigate = useNavigate();
+
   useEffect(() => {
     const handleOutsideClick = (e: MouseEvent) => {
       if (dropdownRef.current && !dropdownRef.current.contains(e.target as HTMLElement)) {
@@ -47,8 +51,19 @@ const Navbar = () => {
     };
   }, []);  
 
-  const dispatch = useAppDispatch();
-  const navigate = useNavigate();
+  useEffect(() => {
+    const handleStorageChange = (event: StorageEvent ) => {
+      if (event.key === 'userInfo' && event.newValue !== null) {
+        dispatch(setCredentials({ ...JSON.parse(event.newValue) }));
+      }
+    };
+
+    window.addEventListener('storage', handleStorageChange);
+
+    return () => {
+      window.removeEventListener('storage', handleStorageChange);
+    };
+  }, []);
 
   const [logoutApiCall] = useLogoutMutation();
 

@@ -5,26 +5,27 @@ import { useAppSelector, useAppDispatch } from '../../hooks'
 import Loader from '../../components/Loader';
 import FormContainer from '../../components/FormContainer';
 import FormInput from '../../components/Form/FormInput';
+import GoogleButton from '../../components/Utility/GoogleButton';
 import { isFetchBaseQueryError, isErrorWithMessage  } from '../../utils/helpers';
 
 import { useLoginMutation } from '../../slices/usersApiSlice';
+import { useGetGoogleOauthUrlQuery } from '../../slices/googleApiSlice';
 import { setCredentials } from '../../slices/authSlice';
 import { toast } from 'react-toastify';
 
 const LoginScreen = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-
+  const { userInfo } = useAppSelector((state) => state.auth);
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
-  
-  const [login, { isLoading }] = useLoginMutation();
-  
-  const { userInfo } = useAppSelector((state) => state.auth);
-  
   const { search } = useLocation();
   const searchParams = new URLSearchParams(search);
   const redirect = searchParams.get('redirect') || '/';
+  
+  const [login, { isLoading }] = useLoginMutation();
+  
+  const { data: googleOauth, isLoading: loadingGoogleOauth, error } = useGetGoogleOauthUrlQuery()
   
   useEffect(() => {
     if (userInfo) {
@@ -51,6 +52,32 @@ const LoginScreen = () => {
       }
     }
   };
+
+  const handleGoogleLogin = () => {
+    const width = 520;
+    const height = 640;
+    const left = window.screen.width / 2 - width / 2;
+    const top = window.screen.height / 2 - height / 2;
+    const windowFeatures = `left=${ left },top=${ top },width=${ width },height=${ height }`;
+    
+    const popup = window.open(googleOauth?.url!, 'popup', windowFeatures);
+    const checkPopupInterval = setInterval(() => {
+      if (!popup || popup.closed || popup.closed === undefined) {
+        clearInterval(checkPopupInterval);
+        return;
+      }
+  
+      try {
+        if (popup.location.href.includes('/welcome')) {
+          popup.close();
+          navigate('/shop');
+          clearInterval(checkPopupInterval);
+        }
+      } catch (error) {
+        console.log(error);
+      }
+    }, 1000);
+  }
 
   return (
     <FormContainer>
@@ -87,7 +114,7 @@ const LoginScreen = () => {
               />
             </div>
 
-            <div className="flex items-center justify-center mt-4">
+            <div className="flex flex-col items-center justify-center mt-4">
               {/* To be done: forget password */}
               <button
                 type="submit"
@@ -96,6 +123,11 @@ const LoginScreen = () => {
               >
                 Sign In
               </button>
+              <GoogleButton
+                disabled={ !googleOauth?.url }
+                handleGoogleLogin={ handleGoogleLogin }
+                buttonType='Login with Google'
+              />
             </div>
           </form>
           ) }
