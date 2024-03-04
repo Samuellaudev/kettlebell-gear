@@ -25,6 +25,7 @@ import ProfileScreen from './screens/Authentication/ProfileScreen';
 import AuthGoogleScreen from './screens/Google/AuthGoogleScreen';
 import WelcomeScreen from './screens/Google/WelcomeScreen';
 import PrivacyScreen from './screens/PrivacyScreen';
+import NotFoundScreen from './screens/NotFoundScreen';
 
 import VerifyEmailScreen from './screens/Email/VerifyEmailScreen';
 
@@ -55,6 +56,7 @@ const router = createBrowserRouter(
       <Route path='/emails/verify-email/:verificationString' element={ <VerifyEmailScreen /> } />;
       <Route path="/auth/google/callback" element={ <AuthGoogleScreen /> } />
       <Route path="/privacy" element={ <PrivacyScreen /> } />
+      <Route path='*' element={<NotFoundScreen />}/>
       {/* Registered users */ }
       <Route path='' element={ <PrivateRoute /> }>
         <Route path='/shipping' element={ <ShippingScreen /> } />
