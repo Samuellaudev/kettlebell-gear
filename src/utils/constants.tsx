@@ -8,9 +8,9 @@ export const ORDERS_URL = '/api/orders';
 
 export const PAYPAL_URL = '/api/config/paypal';
 
-export const AWS_S3_GET_URL = '/api/aws-s3';
+// export const AWS_S3_GET_URL = '/api/aws-s3';
 
-export const AWS_S3_UPLOAD_URL = '/api/aws-s3/upload';
+export const IMAGE_UPLOAD_URL = '/api/images/upload/cloudinary';
 
 export const EMAILS_URL = '/api/emails';
 

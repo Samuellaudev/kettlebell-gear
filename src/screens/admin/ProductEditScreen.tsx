@@ -1,12 +1,13 @@
 import { useState, useEffect } from 'react';
 import { Link, useNavigate, useParams } from 'react-router-dom';
 
+import { ProductImage } from '../../shared.types';
 import {
   useGetProductDetailsQuery,
   useUpdateProductMutation,
   useUploadProductImageMutation
 } from '../../slices/productsApiSlice';
-import { errorMessage, isFetchBaseQueryError, isErrorWithMessage, modifiedImageName, originalImageName } from '../../utils/helpers';
+import { errorMessage, isFetchBaseQueryError, isErrorWithMessage, originalImageName } from '../../utils/helpers';
 
 import Loader from '../../components/Loader';
 import FormContainer from '../../components/FormContainer';
@@ -17,7 +18,12 @@ const ProductEditScreen = () => {
 
   const [name, setName] = useState('');
   const [price, setPrice] = useState(0);
-  const [image, setImage] = useState<File | null>(null);
+  const [image, setImage] = useState<ProductImage | File>({
+    url: '',
+    name: '',
+    type: '',
+    lastModified: '',
+  });
   const [brand, setBrand] = useState('');
   const [category, setCategory] = useState('');
   const [countInStock, setCountInStock] = useState(0);
@@ -55,12 +61,12 @@ const ProductEditScreen = () => {
     setImage(file)
   }
 
-  const uploadImageHandler = async () => {
+  const uploadImageHandler = async (): Promise<string | undefined> => {
     let newImage
     if (image?.name) {
         newImage = new File(
         [image],
-        modifiedImageName(productId, image?.name),
+        image?.name!,
         {
           type: image.type,
           lastModified: image.lastModified,
@@ -72,7 +78,9 @@ const ProductEditScreen = () => {
     formData.append('image', newImage);
 
     try {
-      await uploadProductImage(formData).unwrap();
+      const response = await uploadProductImage(formData).unwrap();
+      const imgUrl = response.url
+      return imgUrl
     } catch (err) {
       if (isFetchBaseQueryError(err)) {
         // Access all properties of `FetchBaseQueryError` here
@@ -94,12 +102,15 @@ const ProductEditScreen = () => {
   const submitHandler = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     try {
+      const imgURL = await uploadImageHandler()
+
       await updateProduct({
         productId,
         name,
         price,
         image: {
-          name: modifiedImageName(productId, image?.name),
+          url: imgURL ?? '',
+          name: image?.name!,
           type: image?.type!,
           lastModified: image?.lastModified ? new Date(image.lastModified).toString() : '',
         },
@@ -108,8 +119,6 @@ const ProductEditScreen = () => {
         description,
         countInStock,
       });
-
-      await uploadImageHandler()
 
       toast.success('product updated successfully');
       navigate('/admin/productlist');

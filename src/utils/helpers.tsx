@@ -1,11 +1,6 @@
 import { SerializedError } from '@reduxjs/toolkit';
 import { FetchBaseQueryError } from '@reduxjs/toolkit/query';
-import { Product } from '../shared.types'
 import Message from '../components/Message';
-
-export const modifiedImageName = (id: String, imageName: string) => {
-  return `${id}&img=${imageName}`;
-};
 
 export const originalImageName = (imageName = '') => {
   if (imageName.includes('&img=')) {

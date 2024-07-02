@@ -13,7 +13,8 @@ A dynamic eCommerce platform leveraging the MERN Stack & Redux for seamless onli
 - Comprehensive shopping cart features
 - Product reviews, ratings and pagination
 - Products, users and orders management system using JWT authorization with HttpOnly Cookie
-- Upload image using AWS S3 and retrieve it through presigned URLs
+- ~~Upload image using AWS S3 and retrieve it through presigned URLs~~
+- Upload image using Cloudinary
 - Implementing PayPal / credit card (Test Mode) for checkout process
 
 More project details [here](https://www.samuellau.dev/projects/mern-stack-kettlebell-gear)

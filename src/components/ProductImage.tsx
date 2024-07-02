@@ -1,4 +1,4 @@
-import { useGetProductImageQuery } from '../slices/productsApiSlice';
+// import { useGetProductImageQuery } from '../slices/productsApiSlice';
 import { Product as ProductType } from '../shared.types'
 import Loader from './Loader';
 
@@ -8,20 +8,21 @@ interface ProductImageProps {
 }
 
 const ProductImage = ({ product, customClass }: ProductImageProps) => {
-  const imageName = product?.image?.name || '';
-  const { data: imgData, isLoading: imgLoading, error: imgError } = useGetProductImageQuery(imageName);
+  const imageUrl = product?.image?.url || '';
+  // const imageName = product?.image?.name || '';
+  // const { data: imgData, isLoading: imgLoading, error: imgError } = useGetProductImageQuery(imageName);
 
   return (
     <>
-      {imgLoading ? (
+      {/* {imgLoading ? (
         <Loader customClass='p-10' />
-      ) : (
+      ) : ( */}
           <img
-            src={ imgData?.url }
+            src={ imageUrl }
             alt={ product?.name }
             className={`${customClass}`}
           />
-      )}
+      {/* )} */}
     </>
   );
 };

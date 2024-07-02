@@ -1,4 +1,4 @@
-import { PRODUCTS_URL, AWS_S3_UPLOAD_URL, AWS_S3_GET_URL } from '../utils/constants';
+import { PRODUCTS_URL, IMAGE_UPLOAD_URL } from '../utils/constants';
 import { apiSlice } from './apiSlice';
 import {
   ProductsResponse,
@@ -45,20 +45,20 @@ export const productsApiSlice = apiSlice.injectEndpoints({
         method: 'DELETE',
       }),
     }),
-    uploadProductImage: builder.mutation<void, FormData>({
+    uploadProductImage: builder.mutation<ProductImageData, FormData>({
       query: (data) => ({
-        url: `${AWS_S3_UPLOAD_URL}`,
+        url: `${IMAGE_UPLOAD_URL}`,
         method: 'POST',
         body: data,
       }),
       invalidatesTags: ['Product'],
     }),
-    getProductImage: builder.query<ProductImageData, string>({
-      query: (imgName) => ({
-        url: `${AWS_S3_GET_URL}/${imgName}`,
-      }),
-      keepUnusedDataFor: 5,
-    }),
+    // getProductImage: builder.query<ProductImageData, string>({
+    //   query: (imgName) => ({
+    //     url: `${AWS_S3_GET_URL}/${imgName}`,
+    //   }),
+    //   keepUnusedDataFor: 5,
+    // }),
     createReview: builder.mutation<void, ReviewData>({
       query: (data) => ({
         url: `${PRODUCTS_URL}/${data.productId}/reviews`,
@@ -83,7 +83,7 @@ export const {
   useUpdateProductMutation,
   useDeleteProductMutation,
   useUploadProductImageMutation,
-  useGetProductImageQuery,
+  // useGetProductImageQuery,
   useCreateReviewMutation,
   useGetTopProductsQuery
 } = productsApiSlice;

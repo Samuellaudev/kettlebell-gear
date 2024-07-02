@@ -28,6 +28,7 @@ export interface Review {
 }
 
 export interface ProductImage {
+  url: string;
   name: string;
   type: string;
   lastModified: string;
