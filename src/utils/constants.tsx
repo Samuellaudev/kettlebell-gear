@@ -1,4 +1,4 @@
-export const BASE_URL = 'https://files.kettlebell-gear.com/'
+export const BASE_URL = 'https://kettlebell-gear-backend.vercel.app'
 
 export const PRODUCTS_URL = '/api/products';
 
@@ -20,6 +20,6 @@ export const initialDialogValue = {
   title: '',
   yesButtonText: 'Yes',
   noButtonText: 'No',
-  handleYesClick: () => {},
-  handleNoClick: () => {},
+  handleYesClick: () => { },
+  handleNoClick: () => { },
 };
